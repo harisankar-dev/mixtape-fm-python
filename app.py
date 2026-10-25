@@ -557,13 +557,28 @@ else:
         with st.container(border=True):
             st.markdown(f'<div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
             st.caption("Paste YouTube links or 11-character video IDs. Up to 20 tracks.")
-            count = st.number_input("Select total number of tracks", min_value=0, max_value=20, value=0, step=1)
+            if "track_count" not in st.session_state:
+                st.session_state["track_count"] = 0
+
+            count = int(st.session_state["track_count"])
+            add_col, remove_col, count_col = st.columns([1, 1, 1.2])
+            with add_col:
+                if st.button("＋ Add track", use_container_width=True, disabled=count >= 20, key="add_track_button"):
+                    st.session_state["track_count"] = min(count + 1, 20)
+                    st.rerun()
+            with remove_col:
+                if st.button("− Remove last", use_container_width=True, disabled=count <= 0, key="remove_track_button"):
+                    st.session_state["track_count"] = max(count - 1, 0)
+                    st.rerun()
+            with count_col:
+                st.caption(f"{count} / 20 tracks")
+
             tracks = []
             defaults = ["A song for the long way home", "The one that reminds me of you", "Track three"]
-            if int(count) == 0:
-                st.caption("Choose how many tracks you want first. The title and YouTube fields will appear after you select a number.")
+            if count == 0:
+                st.caption("Your tracklist is empty. Press **Add track** to add a song.")
             else:
-                for i in range(int(count)):
+                for i in range(count):
                     with st.container(border=True):
                         c1, c2 = st.columns([0.9, 1.1])
                         default_title = defaults[i] if i < len(defaults) else f"Track {i+1}"
