@@ -334,7 +334,7 @@ def render_burn_animation(copy):
       <div class="progress"><span></span></div><div class="done">✓ MIXTAPE READY TO SHARE</div>
     </div></body></html>
     """
-    components.html(animation, height=225, scrolling=False)
+    components.html(animation, height=275, scrolling=False)
 
 
 def render_track_player(tracks, copy, key, skin="CD player"):
