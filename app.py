@@ -121,6 +121,12 @@ DEFAULT_COPY = {
 }
 
 
+def sync_copy_value(key):
+    values = dict(st.session_state.get("copy_values", DEFAULT_COPY))
+    values[key] = st.session_state.get(f"copy_{key}", values.get(key, ""))
+    st.session_state["copy_values"] = values
+
+
 def render_hero(copy, recipient=False):
     eyebrow = html.escape(str(copy.get("recipient_eyebrow" if recipient else "hero_eyebrow", "")))
     title = html.escape(str(copy.get("recipient_title" if recipient else "hero_title", "")))
@@ -280,6 +286,8 @@ else:
     if "copy_values" not in st.session_state:
         st.session_state["copy_values"] = dict(DEFAULT_COPY)
     copy_values = st.session_state["copy_values"]
+    for copy_key, copy_default in copy_values.items():
+        st.session_state.setdefault(f"copy_{copy_key}", copy_default)
 
     render_hero(copy_values)
     left, right = st.columns([1.05, 0.95], gap="large")
@@ -298,23 +306,23 @@ else:
         with st.expander("Customise all display text", expanded=False):
             st.caption("These words appear on the home page, mixtape player, and recipient page.")
             st.markdown("**Home page**")
-            copy_values["hero_eyebrow"] = st.text_input("Home eyebrow", copy_values["hero_eyebrow"], max_chars=100)
-            copy_values["hero_title"] = st.text_input("Home headline", copy_values["hero_title"], max_chars=100)
-            copy_values["hero_accent"] = st.text_input("Home highlighted line", copy_values["hero_accent"], max_chars=100)
-            copy_values["hero_description"] = st.text_area("Home introduction", copy_values["hero_description"], max_chars=400)
+            copy_values["hero_eyebrow"] = st.text_input("Home eyebrow", max_chars=100, key="copy_hero_eyebrow", on_change=sync_copy_value, args=("hero_eyebrow",))
+            copy_values["hero_title"] = st.text_input("Home headline", max_chars=100, key="copy_hero_title", on_change=sync_copy_value, args=("hero_title",))
+            copy_values["hero_accent"] = st.text_input("Home highlighted line", max_chars=100, key="copy_hero_accent", on_change=sync_copy_value, args=("hero_accent",))
+            copy_values["hero_description"] = st.text_area("Home introduction", max_chars=400, key="copy_hero_description", on_change=sync_copy_value, args=("hero_description",))
             st.markdown("**Recipient page**")
-            copy_values["recipient_eyebrow"] = st.text_input("Recipient eyebrow", copy_values["recipient_eyebrow"], max_chars=100)
-            copy_values["recipient_title"] = st.text_input("Recipient headline", copy_values["recipient_title"], max_chars=100)
-            copy_values["recipient_accent"] = st.text_input("Recipient highlighted line", copy_values["recipient_accent"], max_chars=100)
-            copy_values["recipient_description"] = st.text_area("Recipient introduction", copy_values["recipient_description"], max_chars=400)
+            copy_values["recipient_eyebrow"] = st.text_input("Recipient eyebrow", max_chars=100, key="copy_recipient_eyebrow", on_change=sync_copy_value, args=("recipient_eyebrow",))
+            copy_values["recipient_title"] = st.text_input("Recipient headline", max_chars=100, key="copy_recipient_title", on_change=sync_copy_value, args=("recipient_title",))
+            copy_values["recipient_accent"] = st.text_input("Recipient highlighted line", max_chars=100, key="copy_recipient_accent", on_change=sync_copy_value, args=("recipient_accent",))
+            copy_values["recipient_description"] = st.text_area("Recipient introduction", max_chars=400, key="copy_recipient_description", on_change=sync_copy_value, args=("recipient_description",))
             st.markdown("**Player and section labels**")
-            copy_values["player_kicker"] = st.text_input("Player kicker", copy_values["player_kicker"], max_chars=100)
-            copy_values["player_hint"] = st.text_input("Player hint", copy_values["player_hint"], max_chars=100)
-            copy_values["side_label"] = st.text_input("Disc label", copy_values["side_label"], max_chars=30)
-            copy_values["dedication_heading"] = st.text_input("Dedication section heading", copy_values["dedication_heading"], max_chars=80)
-            copy_values["tracklist_heading"] = st.text_input("Tracklist heading", copy_values["tracklist_heading"], max_chars=80)
-            copy_values["preview_heading"] = st.text_input("Preview heading", copy_values["preview_heading"], max_chars=80)
-            copy_values["footer_text"] = st.text_input("Footer text", copy_values["footer_text"], max_chars=180)
+            copy_values["player_kicker"] = st.text_input("Player kicker", max_chars=100, key="copy_player_kicker", on_change=sync_copy_value, args=("player_kicker",))
+            copy_values["player_hint"] = st.text_input("Player hint", max_chars=100, key="copy_player_hint", on_change=sync_copy_value, args=("player_hint",))
+            copy_values["side_label"] = st.text_input("Disc label", max_chars=30, key="copy_side_label", on_change=sync_copy_value, args=("side_label",))
+            copy_values["dedication_heading"] = st.text_input("Dedication section heading", max_chars=80, key="copy_dedication_heading", on_change=sync_copy_value, args=("dedication_heading",))
+            copy_values["tracklist_heading"] = st.text_input("Tracklist heading", max_chars=80, key="copy_tracklist_heading", on_change=sync_copy_value, args=("tracklist_heading",))
+            copy_values["preview_heading"] = st.text_input("Preview heading", max_chars=80, key="copy_preview_heading", on_change=sync_copy_value, args=("preview_heading",))
+            copy_values["footer_text"] = st.text_input("Footer text", max_chars=180, key="copy_footer_text", on_change=sync_copy_value, args=("footer_text",))
             st.session_state["copy_values"] = copy_values
 
         st.markdown(f'<div class="panel"><div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
