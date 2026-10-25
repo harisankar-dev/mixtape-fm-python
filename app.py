@@ -285,7 +285,7 @@ else:
     left, right = st.columns([1.05, 0.95], gap="large")
 
     with left:
-        st.markdown('<div class="panel"><div class="section-title">01 / The dedication</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="panel"><div class="section-title">01 / {html.escape(str(copy_values["dedication_heading"]))}</div>', unsafe_allow_html=True)
         title = st.text_input("Mixtape title", "a little mixtape for you", max_chars=100)
         a, b = st.columns(2)
         sender = a.text_input("From", placeholder="Your name", max_chars=80)
@@ -317,7 +317,7 @@ else:
             copy_values["footer_text"] = st.text_input("Footer text", copy_values["footer_text"], max_chars=180)
             st.session_state["copy_values"] = copy_values
 
-        st.markdown('<div class="panel"><div class="section-title">02 / The tracklist</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="panel"><div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
         st.caption("Paste YouTube links or 11-character video IDs. Up to 20 tracks.")
         count = st.number_input("Number of tracks", min_value=1, max_value=20, value=3, step=1)
         tracks = []
@@ -332,7 +332,7 @@ else:
         st.markdown('</div>', unsafe_allow_html=True)
 
     with right:
-        st.markdown('<div class="section-title">03 / A little preview</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="section-title">03 / {html.escape(str(copy_values["preview_heading"]))}</div>', unsafe_allow_html=True)
         mix = make_mix(title, sender, recipient, note, cover, skin, tracks, copy_values)
         render_player_card(mix)
         valid_tracks = mix["tracks"]
