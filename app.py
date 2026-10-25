@@ -70,33 +70,42 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 
 /* Each player skin is a separate design, not a recolour of the same card. */
 /* Shared CD hardware design used in editor preview and recipient player card. */
-.player-card.skin-cd { background:#282722; border:1px solid #625b50; border-radius:7px; padding:13px; box-shadow:0 6px 0 #d7cfc1,0 11px 20px rgba(47,39,28,.12); }
-.cd-hardware { position:relative; background:linear-gradient(145deg,#e3dfd6 0%,#c8c2b7 34%,#a9a397 65%,#ded9cf 100%); border:1px solid #f3eee4; border-radius:5px; padding:10px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),inset 0 -3px 5px rgba(54,49,42,.14); }
-.cd-topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; color:#39352f; font:9px 'DM Mono',monospace; letter-spacing:1.05px; padding:2px 3px 10px; text-transform:uppercase; }
-.cd-brand { display:flex; align-items:center; gap:7px; min-width:0; }
-.cd-brand-mark { width:8px; height:8px; border-radius:50%; background:#c6533b; box-shadow:0 0 5px rgba(198,83,59,.4); flex:0 0 8px; }
-.cd-lights { display:flex; align-items:center; gap:5px; flex-shrink:0; }
-.cd-lights i { display:block; width:5px; height:5px; border-radius:50%; background:#6c6c60; }
-.cd-lights i:first-child { background:#c6533b; box-shadow:0 0 5px rgba(198,83,59,.6); }
-.cd-display { background:linear-gradient(180deg,#201f1b,#151411); border:1px solid #676054; border-radius:4px; padding:13px 11px 12px; text-align:left; box-shadow:inset 0 0 0 2px #2d2b25,inset 0 2px 13px rgba(0,0,0,.6); }
-.cd-display-label { display:flex; justify-content:space-between; gap:10px; color:#d4cbbd; font:8px 'DM Mono',monospace; letter-spacing:1.1px; text-transform:uppercase; }
-.cd-screen-title { margin:8px 0 5px; color:#f5eee1; font:500 clamp(20px,3vw,30px)/1.15 'Playfair Display',serif; overflow-wrap:anywhere; }
-.cd-screen-meta { color:#d2a08b; font:9px/1.5 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.6px; overflow-wrap:anywhere; }
-.cd-bay { margin:10px 0; min-height:218px; border:1px solid #aaa397; border-radius:4px; background:linear-gradient(150deg,#e7e3da,#c1bbaf); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-.cd-bay:before { content:""; position:absolute; inset:7px; border:1px solid rgba(255,255,255,.65); border-radius:3px; pointer-events:none; }
-.cd-platter { position:relative; width:178px; height:178px; max-width:70vw; max-height:70vw; border-radius:50%; flex:0 0 auto; border:1px solid #7c776e; background:repeating-radial-gradient(circle at 48% 46%,#494640 0 2px,#282723 3px 5px,#59554c 6px 7px,#312f2a 8px 10px,#9a9489 11px 12px,#37352f 13px 15px); box-shadow:0 0 0 4px #c8c1b6,0 0 0 5px #8e877a,0 4px 8px rgba(40,34,26,.3); animation:cd-spin 9s linear infinite; }
-.cd-platter:before { content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 25deg,rgba(255,255,255,.0),rgba(255,255,255,.3),rgba(255,255,255,.0) 22%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.34) 72%,rgba(255,255,255,.0)); mix-blend-mode:screen; pointer-events:none; }
-.cd-platter:after { content:""; position:absolute; inset:5px; border:1px solid rgba(239,234,224,.35); border-radius:50%; pointer-events:none; }
-.cd-disc-label { position:absolute; width:65px; height:65px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle at 35% 30%,#d9755c,#b94a34 75%); border:2px solid #e6d4c1; color:#fff5e9; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; font:8px/1.2 'DM Mono',monospace; padding:4px; box-shadow:0 0 0 3px rgba(32,30,26,.8),inset 0 0 0 1px rgba(255,255,255,.25); }
+/* CD look: translucent jewel case, iridescent disc, and paper liner notes. */
+.player-card.skin-cd { padding:10px; border:1px solid #d9cebd; border-radius:7px; background:#e7ddce; color:#26241f; box-shadow:0 7px 18px rgba(64,47,29,.10); text-align:left; overflow:hidden; }
+.cd-jewel { position:relative; overflow:hidden; border-radius:4px; padding:12px; border:1px solid rgba(255,255,255,.92); background:linear-gradient(135deg,#fcf8f0 0%,#e8dece 50%,#f7f1e7 100%); box-shadow:inset 0 0 0 1px #d0c4b2,0 2px 4px rgba(49,39,26,.10); }
+.cd-jewel:before { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(118deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,0) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,0) 65%,rgba(255,255,255,.25) 100%); }
+.cd-topline { position:relative; z-index:1; display:flex; justify-content:space-between; gap:8px; align-items:center; padding-bottom:10px; border-bottom:1px solid #d4c8b7; color:#786c5b; font:9px 'DM Mono',monospace; letter-spacing:1.15px; text-transform:uppercase; }
+.cd-topline .serial { color:#c6533b; white-space:nowrap; }
+.cd-upper { position:relative; z-index:1; display:grid; grid-template-columns:minmax(112px,.9fr) minmax(0,1.1fr); gap:13px; align-items:center; padding:13px 0; }
+.cd-disc-stage { position:relative; display:flex; align-items:center; justify-content:center; min-height:175px; border:1px solid #c9bdab; border-radius:3px; background:linear-gradient(145deg,#eee7dc,#ddd1bd); box-shadow:inset 0 0 0 5px rgba(255,255,255,.22); overflow:hidden; }
+.cd-disc-stage:before { content:""; position:absolute; inset:6px; border:1px solid rgba(255,255,255,.55); border-radius:2px; }
+.cd-platter { position:relative; isolation:isolate; width:clamp(112px,15vw,166px); max-width:100%; aspect-ratio:1/1; border-radius:50%; flex:0 0 auto; border:1px solid rgba(95,95,91,.62); background:repeating-radial-gradient(circle at center,rgba(255,255,255,.36) 0 1px,transparent 2px 5px),conic-gradient(from 2deg,#a9c4c9,#e7d7c8 10%,#b8b2d7 20%,#ecddc2 30%,#a9d5d0 42%,#e3c3cf 54%,#b4c7d8 67%,#f0e4c9 80%,#a6c7c8 91%,#a9c4c9); box-shadow:0 0 0 4px rgba(255,255,255,.48),0 0 0 5px #b5a996,0 5px 9px rgba(42,34,24,.2); animation:cd-spin 12s linear infinite; }
+.cd-platter:before { content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 35deg,transparent 0deg,rgba(255,255,255,.62) 38deg,transparent 80deg,rgba(255,255,255,.18) 145deg,transparent 190deg,rgba(255,255,255,.52) 260deg,transparent 310deg); mix-blend-mode:screen; pointer-events:none; }
+.cd-platter:after { content:""; position:absolute; inset:8px; border:1px solid rgba(255,255,255,.45); border-radius:50%; pointer-events:none; }
+.cd-disc-label { position:absolute; width:46%; height:46%; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#c6533b; border:2px solid #f5eadc; color:#fff8ec; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; font:8px/1.25 'DM Mono',monospace; padding:4px; box-shadow:0 0 0 2px rgba(90,78,64,.7),inset 0 0 0 1px rgba(255,255,255,.36); }
 .cd-disc-label img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-.cd-center-hole { position:absolute; width:8px; height:8px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#d7d2c8; border:2px solid #6a655b; box-shadow:0 0 0 1px rgba(0,0,0,.3); z-index:2; }
-.cd-liner { background:linear-gradient(#f8f4eb,#eee8dc); border:1px solid #b8b0a2; border-radius:3px; padding:11px 12px 12px; text-align:left; }
-.cd-liner-label { color:#aa4a35; font:8px 'DM Mono',monospace; letter-spacing:1.7px; text-transform:uppercase; border-bottom:1px solid #d8cfc0; padding-bottom:6px; margin-bottom:7px; }
-.cd-liner .note { color:#423c33; font:italic 13px/1.55 'Playfair Display',serif; white-space:pre-wrap; overflow-wrap:anywhere; margin:0; max-width:none; }
-.cd-bottom { display:flex; justify-content:space-between; gap:8px; padding:9px 2px 1px; color:#555046; font:8px 'DM Mono',monospace; letter-spacing:.7px; text-transform:uppercase; }
-.cd-drive-line { height:5px; background:linear-gradient(#827b6e,#ede7dd,#9a9285); border-radius:8px; border:1px solid #928b7e; margin:10px 0 1px; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); }
-.cd-hardware h2 { margin:0; }
+.cd-center-hole { position:absolute; width:9px; height:9px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#dcd6ca; border:1px solid #777165; box-shadow:0 0 0 1px rgba(0,0,0,.14); z-index:2; }
+.cd-copy { min-width:0; text-align:left; }
+.cd-edition { font:9px 'DM Mono',monospace; letter-spacing:1.5px; color:#c6533b; text-transform:uppercase; margin-bottom:9px; }
+.cd-copy h2 { font:500 clamp(22px,3.2vw,34px)/1.08 'Playfair Display',serif; color:#28241f !important; margin:0 0 11px; letter-spacing:-.5px; overflow-wrap:anywhere; }
+.cd-copy-meta { color:#6e6254; font:9px/1.7 'DM Mono',monospace; letter-spacing:.6px; text-transform:uppercase; overflow-wrap:anywhere; }
+.cd-copy-rule { width:38px; height:2px; background:#c6533b; margin:13px 0; }
+.cd-copy-hint { color:#7a6b59; font:italic 12px/1.45 'Playfair Display',serif; }
+.cd-liner { position:relative; z-index:1; background:linear-gradient(#fbf7ef,#f2eadd); border:1px solid #d4c7b5; border-radius:2px; padding:11px 12px 10px; text-align:left; box-shadow:0 2px 3px rgba(60,47,31,.06); }
+.cd-liner-head { display:flex; justify-content:space-between; gap:8px; align-items:center; color:#8a7864; font:8px 'DM Mono',monospace; letter-spacing:1.2px; text-transform:uppercase; border-bottom:1px solid #ddd0be; padding-bottom:7px; margin-bottom:8px; }
+.cd-liner-head span:first-child { color:#c6533b; }
+.cd-liner .note { color:#494033; font:italic 13px/1.58 'Playfair Display',serif; white-space:pre-wrap; overflow-wrap:anywhere; margin:0; max-width:none; }
+.cd-bottom { display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; position:relative; z-index:1; padding:9px 2px 1px; color:#857765; font:8px 'DM Mono',monospace; letter-spacing:.8px; text-transform:uppercase; }
+.cd-case-spine { position:absolute; left:4px; top:48px; bottom:12px; width:3px; border-radius:2px; background:linear-gradient(90deg,#b5a894,#fff9ee,#c5b9a6); box-shadow:1px 0 2px rgba(40,30,20,.12); }
 @keyframes cd-spin { to { transform:rotate(360deg); } }
+@media(max-width:600px) {
+  .player-card.skin-cd { padding:7px; }
+  .cd-jewel { padding:9px; }
+  .cd-upper { grid-template-columns:minmax(100px,.85fr) minmax(0,1.15fr); gap:9px; }
+  .cd-disc-stage { min-height:145px; }
+  .cd-copy h2 { font-size:22px; }
+  .cd-copy-hint { font-size:11px; }
+}
 
 .player-card.skin-ipod { background:linear-gradient(135deg,#e9eae7,#c2c7c2); border:1px solid #a6aba5; border-radius:23px; padding:17px 18px 19px; box-shadow:inset 0 0 0 5px #daddd8, inset 0 0 0 6px #a6aba5, 0 8px 15px #b7aea0; color:#202720; }
 .ipod-logo { font:700 11px 'DM Sans',sans-serif; letter-spacing:1.6px; color:#555d56; text-align:center; margin-bottom:12px; }
@@ -269,24 +278,22 @@ def render_player_card(mix):
     cover_url = html.escape(cover, quote=True) if cover.startswith(("https://", "http://")) else ""
     if skin == "CD player":
         track_count = len(mix.get("tracks", []))
-        if cover_url:
-            label_art = f'<img src="{cover_url}" alt="Cover art">'
-        else:
-            label_art = side
+        label_art = f'<img src="{cover_url}" alt="Cover art">' if cover_url else side
         disc = (
             f'<div class="cd-platter"><div class="cd-disc-label">{label_art}</div>'
             f'<div class="cd-center-hole"></div></div>'
         )
         markup = (
-            f'<div class="player-card skin-cd"><div class="cd-hardware">'
-            f'<div class="cd-topbar"><span class="cd-brand"><i class="cd-brand-mark"></i>MIXTAPE.FM / CD PLAYER</span>'
-            f'<span class="cd-lights"><i></i><i></i><i></i></span></div>'
-            f'<div class="cd-display"><div class="cd-display-label"><span>COMPACT DISC · DIGITAL MIX</span><span>STEREO</span></div>'
-            f'<div class="cd-screen-title">{title}</div><div class="cd-screen-meta">{kicker} · {people_html}</div></div>'
-            f'<div class="cd-bay">{disc}</div>'
-            f'<div class="cd-liner"><div class="cd-liner-label">Liner notes</div><p class="note">{note}</p></div>'
-            f'<div class="cd-bottom"><span>CD-R · 80 MIN</span><span>{track_count:02d} TRACK{"S" if track_count != 1 else ""}</span><span>44.1 KHZ · STEREO</span></div>'
-            f'<div class="cd-drive-line"></div></div></div>'
+            f'<div class="player-card skin-cd"><div class="cd-jewel"><div class="cd-case-spine"></div>'
+            f'<div class="cd-topline"><span>mixtape.fm · A personal compilation</span><span class="serial">No. 001</span></div>'
+            f'<div class="cd-upper"><div class="cd-disc-stage">{disc}</div>'
+            f'<div class="cd-copy"><div class="cd-edition">Made for one person</div><h2>{title}</h2>'
+            f'<div class="cd-copy-meta">{people_html}</div><div class="cd-copy-rule"></div>'
+            f'<div class="cd-copy-hint">{kicker}</div></div></div>'
+            f'<div class="cd-liner"><div class="cd-liner-head"><span>Inside the case</span><span>Side A · {track_count:02d} tracks</span></div>'
+            f'<p class="note">{note}</p></div>'
+            f'<div class="cd-bottom"><span>CD-R / MIX 01</span><span>Burned with feeling</span><span>44.1 kHz stereo</span></div>'
+            f'</div></div>'
         )
     elif skin == "iPod classic":
         if cover_url:
@@ -336,38 +343,36 @@ def render_burn_animation(copy):
     <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
     *{{box-sizing:border-box}} body{{margin:0;background:transparent;font-family:Arial,sans-serif;color:#29251f}}
-    .scene{{background:#f9f4ea;border:1px solid #c8c0b2;border-radius:7px;padding:14px 16px 13px;text-align:center;overflow:hidden}}
-    .top{{display:flex;align-items:center;justify-content:space-between;gap:8px;font:9px monospace;letter-spacing:1px;color:#746b5f;text-transform:uppercase}}
-    .deck{{width:100%;max-width:390px;margin:13px auto 10px;padding:10px;background:linear-gradient(145deg,#e3dfd6 0%,#c8c2b7 34%,#a9a397 65%,#ded9cf 100%);border:1px solid #f3eee4;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 5px 0 #c8c0b2;position:relative}}
-    .deck-top{{display:flex;justify-content:space-between;gap:8px;color:#39352f;font:8px monospace;letter-spacing:1px;padding:2px 2px 9px;text-transform:uppercase}}
-    .deck-lights{{display:flex;gap:4px}} .deck-lights i{{display:block;width:5px;height:5px;border-radius:50%;background:#6c6c60}}
-    .deck-lights i:first-child{{background:#c6533b;box-shadow:0 0 7px #d94b36;animation:blink .7s infinite alternate}}
-    .bay{{height:140px;background:linear-gradient(150deg,#e7e3da,#c1bbaf);border:1px solid #aaa397;border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}}
-    .bay:before{{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.65);pointer-events:none}}
-    .cd{{width:112px;height:112px;border:1px solid #7c776e;border-radius:50%;position:relative;background:repeating-radial-gradient(circle at 48% 46%,#494640 0 2px,#282723 3px 5px,#59554c 6px 7px,#312f2a 8px 10px,#9a9489 11px 12px,#37352f 13px 15px);box-shadow:0 0 0 4px #c8c1b6,0 0 0 5px #8e877a,0 4px 8px #28221a4d;animation:spin 1.7s linear infinite}}
-    .cd:before{{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 25deg,transparent,rgba(255,255,255,.36),transparent 24%,rgba(255,255,255,.08) 51%,rgba(255,255,255,.33) 73%,transparent);mix-blend-mode:screen}}
-    .cd:after{{content:"";position:absolute;width:29px;height:29px;left:40px;top:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9755c,#b94a34 75%);border:2px solid #e6d4c1;box-shadow:0 0 0 2px #282722}}
-    .laser{{position:absolute;left:13%;right:13%;height:2px;top:67px;background:#fa5b45;box-shadow:0 0 8px 2px #f6533b;animation:laser 1.1s ease-in-out infinite alternate}}
-    .slot{{height:6px;background:linear-gradient(#827b6e,#ede7dd,#9a9285);border:1px solid #928b7e;border-radius:5px;margin:10px 0 1px}}
-    .caption{{font:500 16px Georgia,serif;color:#29251f}} .sub{{font:10px monospace;color:#746b5f;margin-top:5px}}
-    .progress{{height:5px;background:#ded5c7;margin:12px 0 9px;border-radius:5px;overflow:hidden}}
-    .progress span{{display:block;height:100%;background:linear-gradient(90deg,#c6533b,#f1a37c);transform-origin:left;animation:progress 4.2s cubic-bezier(.22,.65,.28,1) both}}
+    .scene{{background:#f2eadd;border:1px solid #d3c4af;border-radius:7px;padding:14px 15px;text-align:center;overflow:hidden}}
+    .scene-top{{display:flex;justify-content:space-between;gap:8px;color:#8a7864;font:9px monospace;letter-spacing:1.1px;text-transform:uppercase;border-bottom:1px solid #d8cbb8;padding-bottom:9px}}
+    .work-area{{margin:13px auto 12px;position:relative;width:100%;max-width:370px;min-height:148px;display:grid;place-items:center;background:linear-gradient(135deg,#f9f4ea,#e1d5c3);border:1px solid #d0c1ad;border-radius:4px;box-shadow:inset 0 0 0 5px rgba(255,255,255,.24);overflow:hidden}}
+    .sleeve{{position:absolute;width:115px;height:137px;left:calc(50% - 95px);top:6px;background:linear-gradient(135deg,#fffaf0,#eee1ce);border:1px solid #d0bda4;box-shadow:2px 3px 0 #c8b49a;transform:rotate(-8deg);animation:sleeve .8s ease-out both}}
+    .sleeve:before{{content:"mixtape.fm";position:absolute;top:13px;left:9px;color:#c6533b;font:8px monospace;letter-spacing:.7px}}
+    .sleeve:after{{content:"A MIX MADE\\A FOR YOU";white-space:pre;position:absolute;left:9px;bottom:13px;color:#343027;font:500 15px/1.15 Georgia,serif}}
+    .disc{{position:relative;width:124px;height:124px;border-radius:50%;border:1px solid #b0a694;background:repeating-radial-gradient(circle at center,rgba(255,255,255,.36) 0 1px,transparent 2px 5px),conic-gradient(from 2deg,#a9c4c9,#e7d7c8 10%,#b8b2d7 20%,#ecddc2 30%,#a9d5d0 42%,#e3c3cf 54%,#b4c7d8 67%,#f0e4c9 80%,#a6c7c8 91%,#a9c4c9);box-shadow:0 0 0 4px rgba(255,255,255,.45),0 0 0 5px #b5a996,0 5px 12px #473a2b33;animation:spin 1.8s linear infinite,arrive .9s ease-out both}
+    .disc:before{{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 35deg,transparent,rgba(255,255,255,.6),transparent 80deg,rgba(255,255,255,.2) 145deg,transparent 190deg,rgba(255,255,255,.5) 260deg,transparent 310deg);mix-blend-mode:screen}}
+    .disc:after{{content:"";position:absolute;width:39px;height:39px;left:41px;top:41px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9755c,#b94a34 75%);border:3px solid #f5eadc;box-shadow:0 0 0 2px #a99b88}}
+    .disc-hole{{position:absolute;z-index:2;width:7px;height:7px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#e6dfd3;border:1px solid #756c5e}}
+    .beam{{position:absolute;top:0;bottom:0;width:2px;left:50%;background:#fff;box-shadow:0 0 13px 3px rgba(198,83,59,.34);opacity:.7;animation:beam 1.4s ease-in-out infinite alternate}}
+    .progress{{height:5px;background:#ddd0bd;margin:12px 0 9px;border-radius:5px;overflow:hidden}}
+    .progress span{{display:block;height:100%;background:linear-gradient(90deg,#c6533b,#dba98c,#a9d5d0);transform-origin:left;animation:progress 4.2s cubic-bezier(.22,.65,.28,1) both}}
+    .caption{{font:500 16px Georgia,serif;color:#29251f}}.sub{{color:#786b5a;font:10px monospace;margin-top:5px}}
     .done{{color:#387256;font:10px monospace;letter-spacing:1px;margin-top:5px;opacity:0;animation:done .4s ease-in 3.8s forwards}}
     @keyframes spin{{to{{transform:rotate(360deg)}}}}
-    @keyframes laser{{from{{transform:translateY(-36px);opacity:.45}}to{{transform:translateY(36px);opacity:1}}}}
+    @keyframes arrive{{from{{transform:translateX(20px) rotate(-35deg);opacity:.5}}to{{transform:translateX(0) rotate(0);opacity:1}}}}
+    @keyframes sleeve{{from{{transform:translateX(-25px) rotate(-15deg);opacity:0}}to{{transform:translateX(0) rotate(-8deg);opacity:1}}}}
+    @keyframes beam{{from{{opacity:.15;transform:translateX(-34px)}}to{{opacity:.65;transform:translateX(34px)}}}}
     @keyframes progress{{from{{transform:scaleX(0)}}to{{transform:scaleX(1)}}}}
-    @keyframes blink{{from{{opacity:.3}}to{{opacity:1}}}}
     @keyframes done{{to{{opacity:1}}}}
-    @media(prefers-reduced-motion:reduce){{.cd,.laser,.deck-lights i:first-child,.progress span{{animation:none!important}}.done{{opacity:1}}}}
+    @media(prefers-reduced-motion:reduce){{.disc,.beam,.progress span,.sleeve{{animation:none!important}}.done{{opacity:1}}}}
     </style></head><body><div class="scene">
-      <div class="top"><span>WRITING YOUR MIX · CD-R</span><span>REC ●</span></div>
-      <div class="deck"><div class="deck-top"><span>MIXTAPE.FM · COMPACT DISC</span><span class="deck-lights"><i></i><i></i><i></i></span></div>
-      <div class="bay"><div class="cd"></div><div class="laser"></div></div><div class="slot"></div></div>
+      <div class="scene-top"><span>Preparing your mix</span><span>CD-R · REC ●</span></div>
+      <div class="work-area"><div class="sleeve"></div><div class="disc"><div class="disc-hole"></div></div><div class="beam"></div></div>
       <div class="caption">{headline}</div><div class="sub">{subline}</div>
       <div class="progress"><span></span></div><div class="done">✓ MIXTAPE READY TO SHARE</div>
     </div></body></html>
     """
-    components.html(animation, height=350, scrolling=False)
+    components.html(animation, height=355, scrolling=False)
 
 def render_track_player(tracks, copy, key, skin="CD player"):
     valid = []
