@@ -335,33 +335,39 @@ def render_burn_animation(copy):
     animation = f"""
     <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-    *{{box-sizing:border-box}}body{{margin:0;background:transparent;font-family:Arial,sans-serif}}
-    .scene{{background:#f9f4ea;border:1px solid #c8c0b2;border-radius:6px;padding:13px 16px 12px;text-align:center;overflow:hidden}}
-    .top{{display:flex;justify-content:space-between;gap:8px;font:9px monospace;letter-spacing:1px;color:#746b5f;text-transform:uppercase}}
-    .drive{{width:100%;max-width:340px;height:116px;position:relative;margin:12px auto 9px;background:linear-gradient(#4e4941,#292722);border:1px solid #625b50;border-radius:7px;box-shadow:0 5px 0 #d1c7b7;overflow:hidden}}
-    .slot{{position:absolute;left:12%;right:12%;bottom:18px;height:13px;border-radius:2px;background:#111;box-shadow:inset 0 2px 4px #000}}
-    .led{{position:absolute;top:14px;right:16px;width:7px;height:7px;border-radius:50%;background:#d94b36;box-shadow:0 0 8px #f45a40;animation:blink .7s infinite alternate}}
-    .disc{{position:absolute;width:82px;height:82px;left:calc(50% - 41px);top:11px;border-radius:50%;border:1px solid #9e968a;background:repeating-radial-gradient(circle,#7b766d 0 2px,#bdb6aa 3px 5px,#5c5851 6px 7px,#c7c0b4 8px 11px);animation:spin 1.6s linear infinite,glow 1.5s ease-in-out infinite alternate}}
-    .disc:after{{content:"";position:absolute;width:25px;height:25px;left:28px;top:28px;border-radius:50%;background:#c6533b;border:2px solid #e0a28e}}
-    .laser{{position:absolute;left:15%;right:15%;top:52px;height:2px;background:#fa5b45;box-shadow:0 0 8px 2px #f6533b;animation:laser 1.1s ease-in-out infinite alternate}}
-    .progress{{height:5px;background:#ded5c7;margin:11px 0 9px;border-radius:5px;overflow:hidden}}
+    *{{box-sizing:border-box}} body{{margin:0;background:transparent;font-family:Arial,sans-serif;color:#29251f}}
+    .scene{{background:#f9f4ea;border:1px solid #c8c0b2;border-radius:7px;padding:14px 16px 13px;text-align:center;overflow:hidden}}
+    .top{{display:flex;align-items:center;justify-content:space-between;gap:8px;font:9px monospace;letter-spacing:1px;color:#746b5f;text-transform:uppercase}}
+    .deck{{width:100%;max-width:390px;margin:13px auto 10px;padding:10px;background:linear-gradient(145deg,#e3dfd6 0%,#c8c2b7 34%,#a9a397 65%,#ded9cf 100%);border:1px solid #f3eee4;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 5px 0 #c8c0b2;position:relative}}
+    .deck-top{{display:flex;justify-content:space-between;gap:8px;color:#39352f;font:8px monospace;letter-spacing:1px;padding:2px 2px 9px;text-transform:uppercase}}
+    .deck-lights{{display:flex;gap:4px}} .deck-lights i{{display:block;width:5px;height:5px;border-radius:50%;background:#6c6c60}}
+    .deck-lights i:first-child{{background:#c6533b;box-shadow:0 0 7px #d94b36;animation:blink .7s infinite alternate}}
+    .bay{{height:140px;background:linear-gradient(150deg,#e7e3da,#c1bbaf);border:1px solid #aaa397;border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}}
+    .bay:before{{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.65);pointer-events:none}}
+    .cd{{width:112px;height:112px;border:1px solid #7c776e;border-radius:50%;position:relative;background:repeating-radial-gradient(circle at 48% 46%,#494640 0 2px,#282723 3px 5px,#59554c 6px 7px,#312f2a 8px 10px,#9a9489 11px 12px,#37352f 13px 15px);box-shadow:0 0 0 4px #c8c1b6,0 0 0 5px #8e877a,0 4px 8px #28221a4d;animation:spin 1.7s linear infinite}}
+    .cd:before{{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 25deg,transparent,rgba(255,255,255,.36),transparent 24%,rgba(255,255,255,.08) 51%,rgba(255,255,255,.33) 73%,transparent);mix-blend-mode:screen}}
+    .cd:after{{content:"";position:absolute;width:29px;height:29px;left:40px;top:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9755c,#b94a34 75%);border:2px solid #e6d4c1;box-shadow:0 0 0 2px #282722}}
+    .laser{{position:absolute;left:13%;right:13%;height:2px;top:67px;background:#fa5b45;box-shadow:0 0 8px 2px #f6533b;animation:laser 1.1s ease-in-out infinite alternate}}
+    .slot{{height:6px;background:linear-gradient(#827b6e,#ede7dd,#9a9285);border:1px solid #928b7e;border-radius:5px;margin:10px 0 1px}}
+    .caption{{font:500 16px Georgia,serif;color:#29251f}} .sub{{font:10px monospace;color:#746b5f;margin-top:5px}}
+    .progress{{height:5px;background:#ded5c7;margin:12px 0 9px;border-radius:5px;overflow:hidden}}
     .progress span{{display:block;height:100%;background:linear-gradient(90deg,#c6533b,#f1a37c);transform-origin:left;animation:progress 4.2s cubic-bezier(.22,.65,.28,1) both}}
-    .caption{{color:#29251f;font:500 15px Georgia,serif}}.sub{{color:#746b5f;font:10px monospace;margin-top:4px}}
-    .done{{color:#387256;font:10px monospace;letter-spacing:1px;margin-top:6px;opacity:0;animation:done .4s ease-in 3.8s forwards}}
-    @keyframes spin{{to{{transform:rotate(360deg)}}}}@keyframes glow{{from{{box-shadow:0 0 3px #f6533b22}}to{{box-shadow:0 0 16px #f6533b88}}}}
-    @keyframes laser{{from{{transform:translateY(-31px);opacity:.5}}to{{transform:translateY(31px);opacity:1}}}}
-    @keyframes progress{{from{{transform:scaleX(0)}}to{{transform:scaleX(1)}}}}@keyframes blink{{from{{opacity:.3}}to{{opacity:1}}}}
+    .done{{color:#387256;font:10px monospace;letter-spacing:1px;margin-top:5px;opacity:0;animation:done .4s ease-in 3.8s forwards}}
+    @keyframes spin{{to{{transform:rotate(360deg)}}}}
+    @keyframes laser{{from{{transform:translateY(-36px);opacity:.45}}to{{transform:translateY(36px);opacity:1}}}}
+    @keyframes progress{{from{{transform:scaleX(0)}}to{{transform:scaleX(1)}}}}
+    @keyframes blink{{from{{opacity:.3}}to{{opacity:1}}}}
     @keyframes done{{to{{opacity:1}}}}
-    @media(prefers-reduced-motion:reduce){{.disc,.laser,.led,.progress span{{animation:none!important}}.done{{opacity:1}}}}
+    @media(prefers-reduced-motion:reduce){{.cd,.laser,.deck-lights i:first-child,.progress span{{animation:none!important}}.done{{opacity:1}}}}
     </style></head><body><div class="scene">
-      <div class="top"><span>CD WRITER · 52X</span><span>REC ●</span></div>
-      <div class="drive"><div class="disc"></div><div class="laser"></div><div class="slot"></div><div class="led"></div></div>
+      <div class="top"><span>WRITING YOUR MIX · CD-R</span><span>REC ●</span></div>
+      <div class="deck"><div class="deck-top"><span>MIXTAPE.FM · COMPACT DISC</span><span class="deck-lights"><i></i><i></i><i></i></span></div>
+      <div class="bay"><div class="cd"></div><div class="laser"></div></div><div class="slot"></div></div>
       <div class="caption">{headline}</div><div class="sub">{subline}</div>
       <div class="progress"><span></span></div><div class="done">✓ MIXTAPE READY TO SHARE</div>
     </div></body></html>
     """
-    components.html(animation, height=275, scrolling=False)
-
+    components.html(animation, height=300, scrolling=False)
 
 def render_track_player(tracks, copy, key, skin="CD player"):
     valid = []
