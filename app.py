@@ -423,7 +423,10 @@ def render_track_player(tracks, copy, key, skin="CD player"):
         "playback_note": str(copy.get("playback_note", DEFAULT_COPY["playback_note"]))[:180],
     }
     labels_json = json.dumps(ui_labels, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
-    theme_class = {"CD player": "theme-cd", "iPod classic": "theme-ipod", "Scrapbook": "theme-scrapbook", "Webcore": "theme-webcore"}.get(skin, "theme-cd")
+    theme_class = {"CD player": "theme-cd", "Cassette tape": "theme-cassette", "iPod classic": "theme-ipod", "Scrapbook": "theme-scrapbook", "Webcore": "theme-webcore"}.get(skin, "theme-cd")
+    cassette_markup = ""
+    if skin == "Cassette tape":
+        cassette_markup = '<div class="cassette-mini-deck" id="cassetteMiniDeck"><div class="cassette-mini-top"><span>CASSETTE · SIDE A</span><span>PLAY / REC</span></div><div class="cassette-mini-window"><div class="cassette-mini-spool"></div><div class="cassette-mini-tape"></div><div class="cassette-mini-spool"></div></div><div class="cassette-mini-status" id="cassetteMiniStatus">STOPPED · PRESS PLAY</div></div>'
     component_html = f"""
     <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -435,6 +438,24 @@ def render_track_player(tracks, copy, key, skin="CD player"):
     .theme-cd .actions button{{border-radius:2px;background:#292722;border-color:#625b50;color:#f4eddf}}
     .theme-cd .actions button.primary{{background:#c6533b;border-color:#e18c74}}
     .theme-cd #ytplayer{{border:5px solid #292722;border-radius:3px}}
+    .theme-cassette{{background:linear-gradient(145deg,#dad5c4,#a9a58e);border:1px solid #f1ead7;border-radius:7px;padding:10px;box-shadow:inset 0 0 0 1px #999783,0 5px 0 #c4bba9}}
+    .theme-cassette .now{{background:#e8dfca;border:1px solid #aaa085;border-radius:3px;padding:9px}}
+    .theme-cassette .label{{color:#8c4838}}.theme-cassette .song{{color:#292c22}}
+    .theme-cassette .actions{{justify-content:center}}
+    .theme-cassette .actions button{{background:#33372e;border:1px solid #686b5d;color:#f2ead9;border-radius:3px;box-shadow:inset 0 1px rgba(255,255,255,.12)}}
+    .theme-cassette .actions button.primary{{background:#c6533b;border-color:#a73d2a}}
+    .theme-cassette #ytplayer{{border:4px solid #34372e;border-radius:4px}}
+    .cassette-mini-deck{{background:linear-gradient(145deg,#d7d2c1,#a7a58f 48%,#d6d0be);border:1px solid #eee7d5;border-radius:4px;padding:8px;margin:8px 0 10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}}
+    .cassette-mini-top{{display:flex;justify-content:space-between;gap:8px;color:#414539;font:8px monospace;letter-spacing:1px;padding-bottom:7px}}
+    .cassette-mini-window{{position:relative;min-height:75px;display:flex;align-items:center;justify-content:space-around;gap:16px;background:linear-gradient(#373b31,#20231d);border:1px solid #717363;border-radius:3px;padding:8px;overflow:hidden}}
+    .cassette-mini-window:before{{content:"";position:absolute;inset:4px;border:1px solid rgba(237,227,204,.16);pointer-events:none}}
+    .cassette-mini-spool{{position:relative;width:48px;height:48px;border:2px solid #bab59f;border-radius:50%;background:repeating-conic-gradient(#d0c7ae 0 12deg,#777b6d 12deg 26deg,#d0c7ae 26deg 36deg);box-shadow:0 0 0 3px #242720,0 0 0 4px #858875,inset 0 0 0 5px #454a3d;flex:0 0 auto}}
+    .cassette-mini-spool:before{{content:"";position:absolute;inset:12px;border-radius:50%;background:#d8cdb2;border:2px solid #777560;box-shadow:inset 0 0 0 3px #aba58d}}
+    .cassette-mini-spool:after{{content:"";position:absolute;width:6px;height:6px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#393c31;border:1px solid #f3e7cb}}
+    .cassette-mini-tape{{position:absolute;left:29%;right:29%;top:50%;height:10px;transform:translateY(-50%);background:linear-gradient(#b6a889,#e3d6b9 48%,#a5987b);border:1px solid #c9bda1}}
+    .cassette-mini-deck.is-playing .cassette-mini-spool{{animation:cassette-spin .85s linear infinite}}
+    .cassette-mini-status{{font:8px monospace;letter-spacing:1px;color:#4b4d3f;text-align:right;margin-top:6px;text-transform:uppercase}}
+    @keyframes cassette-spin{{to{{transform:rotate(360deg)}}}}
     .theme-ipod{{background:linear-gradient(135deg,#e7e9e4,#c5cbc4);border:5px solid #d8dcd6;border-radius:18px;box-shadow:inset 0 0 0 1px #969f96;padding:10px}}
     .theme-ipod .now{{background:#d6e0d0;border:2px solid #7c8979;border-radius:2px;padding:9px;box-shadow:inset 0 0 8px #a4b09e}}
     .theme-ipod .label{{color:#425242}}.theme-ipod .song{{color:#202b20}}
@@ -466,6 +487,7 @@ def render_track_player(tracks, copy, key, skin="CD player"):
     </style></head><body><div class="wrap {theme_class}">
       <div class="now"><div><div class="label" id="nowPlayingLabel"></div><div class="song" id="songTitle"></div></div>
       <div class="label" id="trackCount"></div></div>
+      {cassette_markup}
       <div class="actions">
         <button id="prevBtn" type="button" aria-label="Previous track"></button>
         <button id="playBtn" class="primary" type="button"></button>
@@ -491,6 +513,11 @@ def render_track_player(tracks, copy, key, skin="CD player"):
       playBtn.textContent = playing ? labels.pause_button_label : labels.play_button_label;
       document.getElementById('prevBtn').disabled = songs.length < 2;
       document.getElementById('nextBtn').disabled = songs.length < 2;
+      const cassetteDeck = document.getElementById('cassetteMiniDeck');
+      if (cassetteDeck) {{
+        cassetteDeck.classList.toggle('is-playing', playing);
+        document.getElementById('cassetteMiniStatus').textContent = playing ? 'PLAYING · REELS IN MOTION' : 'PAUSED · TAPE AT REST';
+      }}
     }}
     function createPlayer() {{
       if (!window.YT || !window.YT.Player) return;
