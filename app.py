@@ -314,7 +314,8 @@ else:
     # All displayed copy is part of the share payload, so the recipient sees the custom text too.
     if "copy_values" not in st.session_state:
         st.session_state["copy_values"] = dict(DEFAULT_COPY)
-    copy_values = st.session_state["copy_values"]
+    copy_values = {**DEFAULT_COPY, **st.session_state["copy_values"]}
+    st.session_state["copy_values"] = copy_values
     for copy_key, copy_default in copy_values.items():
         st.session_state.setdefault(f"copy_{copy_key}", copy_default)
 
