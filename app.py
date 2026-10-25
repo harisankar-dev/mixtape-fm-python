@@ -69,17 +69,33 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 }
 
 /* Each player skin is a separate design, not a recolour of the same card. */
-.player-card.skin-cd { background:#211f1c; border:1px solid #4b4640; border-radius:5px; padding:20px 18px 22px; box-shadow:0 5px 0 #d7cfc1; }
-.cd-hardware { background:linear-gradient(145deg,#e1ddd4,#b9b2a6); border:1px solid #f3eee4; border-radius:4px; padding:10px; }
-.cd-display { display:flex; justify-content:space-between; gap:10px; color:#39352f; font:9px 'DM Mono',monospace; letter-spacing:1.1px; padding:2px 2px 9px; }
-.cd-window { background:#171614; border:1px solid #5e594f; border-radius:3px; min-height:228px; padding:18px 12px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.cd-window .kicker { margin-bottom:8px; }
-.cd-window h2 { margin:4px 0 9px; }
-.cd-window .to-line { color:#d4cbbd; font-size:9px; }
-.cd-window .note { margin-top:14px; font-size:13px; }
-.cd-disc { width:126px; height:126px; border:1px solid #777065; border-radius:50%; margin:16px auto; display:flex; align-items:center; justify-content:center; background:repeating-radial-gradient(circle at center,#4c4943 0 3px,#282623 4px 7px,#555047 8px 9px,#272522 10px 13px); animation:cd-spin 7s linear infinite; box-shadow:0 0 0 4px #36332e,0 0 0 5px #777065; }
-.cd-disc-label { width:54px; height:54px; border-radius:50%; background:#c6533b; border:2px solid #e18c74; color:#fff5e9; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; font:8px/1.2 'DM Mono',monospace; padding:4px; }
+/* Shared CD hardware design used in editor preview and recipient player card. */
+.player-card.skin-cd { background:#282722; border:1px solid #625b50; border-radius:7px; padding:13px; box-shadow:0 6px 0 #d7cfc1,0 11px 20px rgba(47,39,28,.12); }
+.cd-hardware { position:relative; background:linear-gradient(145deg,#e3dfd6 0%,#c8c2b7 34%,#a9a397 65%,#ded9cf 100%); border:1px solid #f3eee4; border-radius:5px; padding:10px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),inset 0 -3px 5px rgba(54,49,42,.14); }
+.cd-topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; color:#39352f; font:9px 'DM Mono',monospace; letter-spacing:1.05px; padding:2px 3px 10px; text-transform:uppercase; }
+.cd-brand { display:flex; align-items:center; gap:7px; min-width:0; }
+.cd-brand-mark { width:8px; height:8px; border-radius:50%; background:#c6533b; box-shadow:0 0 5px rgba(198,83,59,.4); flex:0 0 8px; }
+.cd-lights { display:flex; align-items:center; gap:5px; flex-shrink:0; }
+.cd-lights i { display:block; width:5px; height:5px; border-radius:50%; background:#6c6c60; }
+.cd-lights i:first-child { background:#c6533b; box-shadow:0 0 5px rgba(198,83,59,.6); }
+.cd-display { background:linear-gradient(180deg,#201f1b,#151411); border:1px solid #676054; border-radius:4px; padding:13px 11px 12px; text-align:left; box-shadow:inset 0 0 0 2px #2d2b25,inset 0 2px 13px rgba(0,0,0,.6); }
+.cd-display-label { display:flex; justify-content:space-between; gap:10px; color:#d4cbbd; font:8px 'DM Mono',monospace; letter-spacing:1.1px; text-transform:uppercase; }
+.cd-screen-title { margin:8px 0 5px; color:#f5eee1; font:500 clamp(20px,3vw,30px)/1.15 'Playfair Display',serif; overflow-wrap:anywhere; }
+.cd-screen-meta { color:#d2a08b; font:9px/1.5 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.6px; overflow-wrap:anywhere; }
+.cd-bay { margin:10px 0; min-height:218px; border:1px solid #aaa397; border-radius:4px; background:linear-gradient(150deg,#e7e3da,#c1bbaf); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.cd-bay:before { content:""; position:absolute; inset:7px; border:1px solid rgba(255,255,255,.65); border-radius:3px; pointer-events:none; }
+.cd-platter { position:relative; width:178px; height:178px; max-width:70vw; max-height:70vw; border-radius:50%; flex:0 0 auto; border:1px solid #7c776e; background:repeating-radial-gradient(circle at 48% 46%,#494640 0 2px,#282723 3px 5px,#59554c 6px 7px,#312f2a 8px 10px,#9a9489 11px 12px,#37352f 13px 15px); box-shadow:0 0 0 4px #c8c1b6,0 0 0 5px #8e877a,0 4px 8px rgba(40,34,26,.3); animation:cd-spin 9s linear infinite; }
+.cd-platter:before { content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 25deg,rgba(255,255,255,.0),rgba(255,255,255,.3),rgba(255,255,255,.0) 22%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.34) 72%,rgba(255,255,255,.0)); mix-blend-mode:screen; pointer-events:none; }
+.cd-platter:after { content:""; position:absolute; inset:5px; border:1px solid rgba(239,234,224,.35); border-radius:50%; pointer-events:none; }
+.cd-disc-label { position:absolute; width:65px; height:65px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle at 35% 30%,#d9755c,#b94a34 75%); border:2px solid #e6d4c1; color:#fff5e9; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; font:8px/1.2 'DM Mono',monospace; padding:4px; box-shadow:0 0 0 3px rgba(32,30,26,.8),inset 0 0 0 1px rgba(255,255,255,.25); }
 .cd-disc-label img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.cd-center-hole { position:absolute; width:8px; height:8px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#d7d2c8; border:2px solid #6a655b; box-shadow:0 0 0 1px rgba(0,0,0,.3); z-index:2; }
+.cd-liner { background:linear-gradient(#f8f4eb,#eee8dc); border:1px solid #b8b0a2; border-radius:3px; padding:11px 12px 12px; text-align:left; }
+.cd-liner-label { color:#aa4a35; font:8px 'DM Mono',monospace; letter-spacing:1.7px; text-transform:uppercase; border-bottom:1px solid #d8cfc0; padding-bottom:6px; margin-bottom:7px; }
+.cd-liner .note { color:#423c33; font:italic 13px/1.55 'Playfair Display',serif; white-space:pre-wrap; overflow-wrap:anywhere; margin:0; max-width:none; }
+.cd-bottom { display:flex; justify-content:space-between; gap:8px; padding:9px 2px 1px; color:#555046; font:8px 'DM Mono',monospace; letter-spacing:.7px; text-transform:uppercase; }
+.cd-drive-line { height:5px; background:linear-gradient(#827b6e,#ede7dd,#9a9285); border-radius:8px; border:1px solid #928b7e; margin:10px 0 1px; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); }
+.cd-hardware h2 { margin:0; }
 @keyframes cd-spin { to { transform:rotate(360deg); } }
 
 .player-card.skin-ipod { background:linear-gradient(135deg,#e9eae7,#c2c7c2); border:1px solid #a6aba5; border-radius:23px; padding:17px 18px 19px; box-shadow:inset 0 0 0 5px #daddd8, inset 0 0 0 6px #a6aba5, 0 8px 15px #b7aea0; color:#202720; }
@@ -252,15 +268,25 @@ def render_player_card(mix):
     people_html = html.escape(people or hint)
     cover_url = html.escape(cover, quote=True) if cover.startswith(("https://", "http://")) else ""
     if skin == "CD player":
+        track_count = len(mix.get("tracks", []))
         if cover_url:
-            disc = f'<div class="cd-disc"><div class="cd-disc-label"><img src="{cover_url}" alt="Cover"></div></div>'
+            label_art = f'<img src="{cover_url}" alt="Cover art">'
         else:
-            disc = f'<div class="cd-disc"><div class="cd-disc-label">{side}</div></div>'
+            label_art = side
+        disc = (
+            f'<div class="cd-platter"><div class="cd-disc-label">{label_art}</div>'
+            f'<div class="cd-center-hole"></div></div>'
+        )
         markup = (
             f'<div class="player-card skin-cd"><div class="cd-hardware">'
-            f'<div class="cd-display"><span>COMPACT DISC · DIGITAL MIX</span><span>STEREO</span></div>'
-            f'<div class="cd-window"><div class="kicker">{kicker}</div><h2>{title}</h2>'
-            f'<div class="to-line">{people_html}</div>{disc}<p class="note">{note}</p></div></div></div>'
+            f'<div class="cd-topbar"><span class="cd-brand"><i class="cd-brand-mark"></i>MIXTAPE.FM / CD PLAYER</span>'
+            f'<span class="cd-lights"><i></i><i></i><i></i></span></div>'
+            f'<div class="cd-display"><div class="cd-display-label"><span>COMPACT DISC · DIGITAL MIX</span><span>STEREO</span></div>'
+            f'<div class="cd-screen-title">{title}</div><div class="cd-screen-meta">{kicker} · {people_html}</div></div>'
+            f'<div class="cd-bay">{disc}</div>'
+            f'<div class="cd-liner"><div class="cd-liner-label">Liner notes</div><p class="note">{note}</p></div>'
+            f'<div class="cd-bottom"><span>CD-R · 80 MIN</span><span>{track_count:02d} TRACK{"S" if track_count != 1 else ""}</span><span>44.1 KHZ · STEREO</span></div>'
+            f'<div class="cd-drive-line"></div></div></div>'
         )
     elif skin == "iPod classic":
         if cover_url:
