@@ -68,7 +68,6 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
   .player-card { padding:24px 12px; }
 }
 </style>
-<div class="brand"><b>mixtape<span class="dot">.</span>fm</b><div class="tag">A little music, sent with feeling</div></div>
 """, unsafe_allow_html=True)
 
 
@@ -118,6 +117,16 @@ DEFAULT_COPY = {
     "tracklist_heading": "The tracklist",
     "preview_heading": "A little preview",
     "footer_text": "Made with feeling · No database required · Music plays through YouTube",
+    "brand_tagline": "A little music, sent with feeling",
+    "burn_button_label": "Burn this mixtape ↗",
+    "share_button_label": "Open / share mixtape",
+    "make_own_label": "Make your own mixtape",
+    "now_playing_label": "Now playing",
+    "previous_button_label": "◀ PREV",
+    "play_button_label": "▶ PLAY",
+    "pause_button_label": "Ⅱ PAUSE",
+    "next_button_label": "NEXT ▶",
+    "playback_note": "Playback is provided by YouTube.",
 }
 
 
@@ -125,6 +134,14 @@ def sync_copy_value(key):
     values = dict(st.session_state.get("copy_values", DEFAULT_COPY))
     values[key] = st.session_state.get(f"copy_{key}", values.get(key, ""))
     st.session_state["copy_values"] = values
+
+
+def render_brand(copy):
+    tagline = html.escape(str(copy.get("brand_tagline", DEFAULT_COPY["brand_tagline"])))
+    st.markdown(
+        f'<div class="brand"><b>mixtape<span class="dot">.</span>fm</b><div class="tag">{tagline}</div></div>',
+        unsafe_allow_html=True,
+    )
 
 
 def render_hero(copy, recipient=False):
@@ -162,7 +179,7 @@ def render_player_card(mix):
     )
 
 
-def render_track_player(tracks, key):
+def render_track_player(tracks, copy, key):
     valid = []
     for track in tracks:
         video = yt_id(str(track.get("url", "")))
@@ -172,6 +189,15 @@ def render_track_player(tracks, key):
         st.info("Add at least one valid YouTube link to enable playback.")
         return
     tracks_json = json.dumps(valid, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
+    ui_labels = {
+        "now_playing_label": str(copy.get("now_playing_label", DEFAULT_COPY["now_playing_label"]))[:100],
+        "previous_button_label": str(copy.get("previous_button_label", DEFAULT_COPY["previous_button_label"]))[:40],
+        "play_button_label": str(copy.get("play_button_label", DEFAULT_COPY["play_button_label"]))[:40],
+        "pause_button_label": str(copy.get("pause_button_label", DEFAULT_COPY["pause_button_label"]))[:40],
+        "next_button_label": str(copy.get("next_button_label", DEFAULT_COPY["next_button_label"]))[:40],
+        "playback_note": str(copy.get("playback_note", DEFAULT_COPY["playback_note"]))[:180],
+    }
+    labels_json = json.dumps(ui_labels, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
     component_html = f"""
     <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -184,29 +210,34 @@ def render_track_player(tracks, key):
     button{{border:1px solid #201e1a;background:#201e1a;color:#fff8ee;border-radius:3px;padding:10px 13px;font:11px monospace;letter-spacing:.5px;cursor:pointer}}
     button.primary{{background:#c6533b;border-color:#c6533b}} button:disabled{{opacity:.45;cursor:default}}
     #ytplayer{{width:100%;aspect-ratio:16/9;min-height:220px;border:0;border-radius:4px;background:#211f1c}}
-    .foot{{font:10px monospace;color:#746b5f;margin-top:8px;letter-spacing:.5px}}
+    .foot{{font:10px monospace;color:#746b5f;margin-top:8px;letter-spacing:.5px;overflow-wrap:anywhere}}
     @media(max-width:540px){{#ytplayer{{min-height:190px}}button{{padding:9px 10px}}}}
     </style></head><body><div class="wrap">
-      <div class="now"><div><div class="label">Now playing</div><div class="song" id="songTitle"></div></div>
+      <div class="now"><div><div class="label" id="nowPlayingLabel"></div><div class="song" id="songTitle"></div></div>
       <div class="label" id="trackCount"></div></div>
       <div class="actions">
-        <button id="prevBtn" type="button" aria-label="Previous track">◀ PREV</button>
-        <button id="playBtn" class="primary" type="button">▶ PLAY</button>
-        <button id="nextBtn" type="button" aria-label="Next track">NEXT ▶</button>
+        <button id="prevBtn" type="button" aria-label="Previous track"></button>
+        <button id="playBtn" class="primary" type="button"></button>
+        <button id="nextBtn" type="button" aria-label="Next track"></button>
       </div>
       <div style="height:10px"></div><div id="ytplayer"></div>
-      <div class="foot">Playback is provided by YouTube.</div>
+      <div class="foot" id="playbackNote"></div>
     </div>
     <script>
     const songs = {tracks_json};
+    const labels = {labels_json};
     let current = 0, player = null, ready = false, playing = false;
     const songTitle = document.getElementById('songTitle');
     const trackCount = document.getElementById('trackCount');
     const playBtn = document.getElementById('playBtn');
+    document.getElementById('nowPlayingLabel').textContent = labels.now_playing_label;
+    document.getElementById('prevBtn').textContent = labels.previous_button_label;
+    document.getElementById('nextBtn').textContent = labels.next_button_label;
+    document.getElementById('playbackNote').textContent = labels.playback_note;
     function refresh() {{
       songTitle.textContent = songs[current].title || 'Untitled track';
       trackCount.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(songs.length).padStart(2,'0');
-      playBtn.textContent = playing ? 'Ⅱ PAUSE' : '▶ PLAY';
+      playBtn.textContent = playing ? labels.pause_button_label : labels.play_button_label;
       document.getElementById('prevBtn').disabled = songs.length < 2;
       document.getElementById('nextBtn').disabled = songs.length < 2;
     }}
@@ -247,8 +278,7 @@ def render_track_player(tracks, key):
     refresh();
     </script></body></html>
     """
-    components.html(component_html, height=465, scrolling=False)
-
+    components.html(component_html, height=545, scrolling=False)
 
 def make_mix(title, sender, recipient, note, cover, skin, tracks, copy):
     return {
@@ -267,6 +297,7 @@ incoming = decode_mix(st.query_params.get("mix", "")) if st.query_params.get("mi
 if incoming:
     incoming.setdefault("copy", {})
     copy = {**DEFAULT_COPY, **incoming["copy"]}
+    render_brand(copy)
     st.markdown(
         f'<div class="hero"><div class="eyebrow">{html.escape(str(copy["recipient_eyebrow"]))}</div>'
         f'<h1>{html.escape(str(copy["recipient_title"]))}<br><em>{html.escape(str(copy["recipient_accent"]))}</em></h1>'
@@ -274,37 +305,38 @@ if incoming:
         unsafe_allow_html=True,
     )
     render_player_card({**incoming, "copy": copy})
-    render_track_player(incoming.get("tracks", []), "recipient")
+    render_track_player(incoming.get("tracks", []), copy, "recipient")
     st.markdown('<div class="footer">' + html.escape(str(copy.get("footer_text", DEFAULT_COPY["footer_text"]))) + '</div>', unsafe_allow_html=True)
-    if st.button("MAKE YOUR OWN MIXTAPE"):
+    if st.button(str(copy.get("make_own_label", DEFAULT_COPY["make_own_label"]))):
         st.query_params.clear()
         st.rerun()
-
 else:
-    # Custom page/player copy defaults. Creators can edit every piece of display copy
-    # which travels with the shared mixtape.
+    # All displayed copy is part of the share payload, so the recipient sees the custom text too.
     if "copy_values" not in st.session_state:
         st.session_state["copy_values"] = dict(DEFAULT_COPY)
     copy_values = st.session_state["copy_values"]
     for copy_key, copy_default in copy_values.items():
         st.session_state.setdefault(f"copy_{copy_key}", copy_default)
 
+    render_brand(copy_values)
     render_hero(copy_values)
     left, right = st.columns([1.05, 0.95], gap="large")
 
     with left:
-        st.markdown(f'<div class="panel"><div class="section-title">01 / {html.escape(str(copy_values["dedication_heading"]))}</div>', unsafe_allow_html=True)
-        title = st.text_input("Mixtape title", "a little mixtape for you", max_chars=100)
-        a, b = st.columns(2)
-        sender = a.text_input("From", placeholder="Your name", max_chars=80)
-        recipient = b.text_input("For", placeholder="Their name", max_chars=80)
-        note = st.text_area("The note", "Some songs that made me think of you.", max_chars=700, height=115)
-        cover = st.text_input("Cover image URL (optional)", placeholder="https://...")
-        skin = st.selectbox("Player style", ["CD player", "iPod classic", "Scrapbook", "Webcore"])
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown(f'<div class="section-title">01 / {html.escape(str(copy_values["dedication_heading"]))}</div>', unsafe_allow_html=True)
+            title = st.text_input("Mixtape title", "a little mixtape for you", max_chars=100)
+            a, b = st.columns(2)
+            sender = a.text_input("From", placeholder="Your name", max_chars=80)
+            recipient = b.text_input("For", placeholder="Their name", max_chars=80)
+            note = st.text_area("The note", "Some songs that made me think of you.", max_chars=700, height=115)
+            cover = st.text_input("Cover image URL (optional)", placeholder="https://...")
+            skin = st.selectbox("Player style", ["CD player", "iPod classic", "Scrapbook", "Webcore"])
 
         with st.expander("Customise all display text", expanded=False):
-            st.caption("These words appear on the home page, mixtape player, and recipient page.")
+            st.caption("Edit the home page, player, recipient page, section headings, and playback controls.")
+            st.markdown("**Branding**")
+            copy_values["brand_tagline"] = st.text_input("Top-bar tagline", max_chars=100, key="copy_brand_tagline", on_change=sync_copy_value, args=("brand_tagline",))
             st.markdown("**Home page**")
             copy_values["hero_eyebrow"] = st.text_input("Home eyebrow", max_chars=100, key="copy_hero_eyebrow", on_change=sync_copy_value, args=("hero_eyebrow",))
             copy_values["hero_title"] = st.text_input("Home headline", max_chars=100, key="copy_hero_title", on_change=sync_copy_value, args=("hero_title",))
@@ -322,53 +354,64 @@ else:
             copy_values["dedication_heading"] = st.text_input("Dedication section heading", max_chars=80, key="copy_dedication_heading", on_change=sync_copy_value, args=("dedication_heading",))
             copy_values["tracklist_heading"] = st.text_input("Tracklist heading", max_chars=80, key="copy_tracklist_heading", on_change=sync_copy_value, args=("tracklist_heading",))
             copy_values["preview_heading"] = st.text_input("Preview heading", max_chars=80, key="copy_preview_heading", on_change=sync_copy_value, args=("preview_heading",))
+            st.markdown("**Actions and playback**")
+            copy_values["burn_button_label"] = st.text_input("Burn button", max_chars=60, key="copy_burn_button_label", on_change=sync_copy_value, args=("burn_button_label",))
+            copy_values["share_button_label"] = st.text_input("Share button", max_chars=60, key="copy_share_button_label", on_change=sync_copy_value, args=("share_button_label",))
+            copy_values["make_own_label"] = st.text_input("Make-your-own button", max_chars=60, key="copy_make_own_label", on_change=sync_copy_value, args=("make_own_label",))
+            copy_values["now_playing_label"] = st.text_input("Now-playing label", max_chars=60, key="copy_now_playing_label", on_change=sync_copy_value, args=("now_playing_label",))
+            copy_values["previous_button_label"] = st.text_input("Previous-track button", max_chars=30, key="copy_previous_button_label", on_change=sync_copy_value, args=("previous_button_label",))
+            copy_values["play_button_label"] = st.text_input("Play button", max_chars=30, key="copy_play_button_label", on_change=sync_copy_value, args=("play_button_label",))
+            copy_values["pause_button_label"] = st.text_input("Pause button", max_chars=30, key="copy_pause_button_label", on_change=sync_copy_value, args=("pause_button_label",))
+            copy_values["next_button_label"] = st.text_input("Next-track button", max_chars=30, key="copy_next_button_label", on_change=sync_copy_value, args=("next_button_label",))
+            copy_values["playback_note"] = st.text_input("Playback note", max_chars=180, key="copy_playback_note", on_change=sync_copy_value, args=("playback_note",))
             copy_values["footer_text"] = st.text_input("Footer text", max_chars=180, key="copy_footer_text", on_change=sync_copy_value, args=("footer_text",))
             st.session_state["copy_values"] = copy_values
 
-        st.markdown(f'<div class="panel"><div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
-        st.caption("Paste YouTube links or 11-character video IDs. Up to 20 tracks.")
-        count = st.number_input("Number of tracks", min_value=1, max_value=20, value=3, step=1)
-        tracks = []
-        defaults = ["A song for the long way home", "The one that reminds me of you", "Track three"]
-        for i in range(int(count)):
-            with st.container(border=True):
-                c1, c2 = st.columns([0.9, 1.1])
-                default_title = defaults[i] if i < len(defaults) else f"Track {i+1}"
-                track_title = c1.text_input(f"Track {i+1:02d} title", value=default_title, key=f"track_title_{i}", max_chars=120)
-                track_url = c2.text_input("YouTube URL / ID", key=f"track_url_{i}", placeholder="youtube.com/watch?v=...")
-                tracks.append({"title": track_title, "url": track_url})
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown(f'<div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
+            st.caption("Paste YouTube links or 11-character video IDs. Up to 20 tracks.")
+            count = st.number_input("Number of tracks", min_value=1, max_value=20, value=3, step=1)
+            tracks = []
+            defaults = ["A song for the long way home", "The one that reminds me of you", "Track three"]
+            for i in range(int(count)):
+                with st.container(border=True):
+                    c1, c2 = st.columns([0.9, 1.1])
+                    default_title = defaults[i] if i < len(defaults) else f"Track {i+1}"
+                    track_title = c1.text_input(f"Track {i+1:02d} title", value=default_title, key=f"track_title_{i}", max_chars=120)
+                    track_url = c2.text_input("YouTube URL / ID", key=f"track_url_{i}", placeholder="youtube.com/watch?v=...")
+                    tracks.append({"title": track_title, "url": track_url})
 
     with right:
-        st.markdown(f'<div class="section-title">03 / {html.escape(str(copy_values["preview_heading"]))}</div>', unsafe_allow_html=True)
-        mix = make_mix(title, sender, recipient, note, cover, skin, tracks, copy_values)
-        render_player_card(mix)
-        valid_tracks = mix["tracks"]
-        st.caption(f"{len(valid_tracks)} valid YouTube track(s)")
-        if valid_tracks:
-            render_track_player(valid_tracks, "preview")
-        else:
-            st.info("Add at least one valid YouTube link to preview playback controls.")
-
-        current_payload = encode_mix(mix) if valid_tracks else ""
-        if st.button("BURN THIS MIXTAPE ↗", use_container_width=True, type="primary"):
-            if not valid_tracks:
-                st.warning("Add at least one valid YouTube link before burning your mixtape.")
+        with st.container(border=True):
+            st.markdown(f'<div class="section-title">03 / {html.escape(str(copy_values["preview_heading"]))}</div>', unsafe_allow_html=True)
+            mix = make_mix(title, sender, recipient, note, cover, skin, tracks, copy_values)
+            render_player_card(mix)
+            valid_tracks = mix["tracks"]
+            st.caption(f"{len(valid_tracks)} valid YouTube track(s)")
+            if valid_tracks:
+                render_track_player(valid_tracks, copy_values, "preview")
             else:
-                st.session_state["share_payload"] = current_payload
+                st.info("Add at least one valid YouTube link to preview playback controls.")
 
-        if current_payload and st.session_state.get("share_payload") == current_payload:
-            try:
-                base_url = st.context.url.split("?", 1)[0]
-            except Exception:
-                base_url = ""
-            share_url = f"{base_url}?mix={quote(current_payload)}" if base_url else ""
-            st.success("Your mixtape is ready to share.")
-            if share_url:
-                st.code(share_url, language=None)
-                st.link_button("OPEN / SHARE MIXTAPE", share_url, use_container_width=True)
-            else:
-                st.info("Deploy the app publicly to generate a shareable link.")
-            st.caption("The mixtape details are encoded in the URL, so no database is needed. Very long mixtapes can create long links.")
+            current_payload = encode_mix(mix) if valid_tracks else ""
+            if st.button(str(copy_values.get("burn_button_label", DEFAULT_COPY["burn_button_label"])), use_container_width=True, type="primary"):
+                if not valid_tracks:
+                    st.warning("Add at least one valid YouTube link before burning your mixtape.")
+                else:
+                    st.session_state["share_payload"] = current_payload
+
+            if current_payload and st.session_state.get("share_payload") == current_payload:
+                try:
+                    base_url = st.context.url.split("?", 1)[0]
+                except Exception:
+                    base_url = ""
+                share_url = f"{base_url}?mix={quote(current_payload)}" if base_url else ""
+                st.success("Your mixtape is ready to share.")
+                if share_url:
+                    st.code(share_url, language=None)
+                    st.link_button(str(copy_values.get("share_button_label", DEFAULT_COPY["share_button_label"])), share_url, use_container_width=True)
+                else:
+                    st.info("Deploy the app publicly to generate a shareable link.")
+                st.caption("The mixtape details are encoded in the URL, so no database is needed. Very long mixtapes can create long links.")
 
 st.markdown('<div class="footer">' + html.escape(str(copy_values.get("footer_text", DEFAULT_COPY["footer_text"]))) + '</div>' if not incoming else "", unsafe_allow_html=True)
