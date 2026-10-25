@@ -192,6 +192,55 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 """, unsafe_allow_html=True)
 
 
+def install_haptic_bridge():
+    """Add page-level tap feedback where the embedded component can access the host page.
+
+    The host-document access is intentionally guarded: some Streamlit/browser versions
+    isolate component iframes, in which case player-local feedback still works.
+    """
+    components.html("""
+    <script>
+    (function () {
+      try {
+        const host = window.parent;
+        if (!host || !host.document || !host.document.documentElement) return;
+        if (host.__mixtapeHapticGlobalSetup) return;
+        host.__mixtapeHapticGlobalSetup = true;
+        if (typeof host.__mixtapeHapticsEnabled !== "boolean") {
+          host.__mixtapeHapticsEnabled = true;
+        }
+        const style = host.document.createElement("style");
+        style.textContent = [
+          "button,a,[role=button],input,textarea,select,[data-baseweb=select]{transition:transform .08s ease,filter .08s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}",
+          "button:active,a:active,[role=button]:active{transform:scale(.985)!important;filter:brightness(.95)}",
+          "@media(prefers-reduced-motion:reduce){button,a,[role=button],input,textarea,select{transition:none!important}}"
+        ].join("\\n");
+        host.document.head.appendChild(style);
+        let lastTap = 0;
+        const tapTarget = "button,a,input,textarea,select,[role=button],[role=option],[data-baseweb=select]";
+        host.document.addEventListener("pointerdown", function (event) {
+          if (host.__mixtapeHapticsEnabled === false) return;
+          if (!event.target || !event.target.closest || !event.target.closest(tapTarget)) return;
+          const now = Date.now();
+          if (now - lastTap < 70) return;
+          lastTap = now;
+          try {
+            if (host.navigator && typeof host.navigator.vibrate === "function") {
+              host.navigator.vibrate(8);
+            }
+          } catch (error) {}
+        }, true);
+      } catch (error) {
+        // Cross-origin/sandboxed component: page-wide haptics are unavailable.
+      }
+    })();
+    </script>
+    """, height=1, scrolling=False)
+
+
+install_haptic_bridge()
+
+
 def yt_id(url):
     url = (url or "").strip()
     for marker in ("youtu.be/", "youtube.com/watch?v=", "youtube.com/embed/", "youtube.com/shorts/", "youtube.com/live/"):
@@ -831,13 +880,27 @@ let player = null;
 let ready = false;
 let playing = false;
 let hapticsEnabled = true;
+try {
+  if (window.parent && window.parent.__mixtapeHapticsEnabled === false) hapticsEnabled = false;
+} catch (error) {}
 let apiLoadStarted = false;
 
+function pulseHaptic(duration) {
+  try {
+    const host = window.parent;
+    if (host && host !== window && host.navigator && typeof host.navigator.vibrate === 'function') {
+      const result = host.navigator.vibrate(duration);
+      if (result !== false) return true;
+    }
+  } catch (error) {}
+  try {
+    if (navigator.vibrate) return navigator.vibrate(duration) !== false;
+  } catch (error) {}
+  return false;
+}
 function haptic() {
   if (!hapticsEnabled) return;
-  try {
-    if (navigator.vibrate) navigator.vibrate(12);
-  } catch (error) {}
+  pulseHaptic(10);
 }
 function setStatus(message) {
   const status = document.getElementById('playerStatus');
@@ -919,7 +982,7 @@ function toggleTracklist() {
   setStatus(hidden ? 'Choose a track from the list' : 'Tracklist closed');
 }
 function doAction(action, button) {
-  haptic();
+  if (action !== 'toggle-haptics') haptic();
   if (action === 'toggle-play') togglePlay();
   else if (action === 'previous') selectTrack(current - 1, true);
   else if (action === 'next') selectTrack(current + 1, true);
@@ -927,9 +990,9 @@ function doAction(action, button) {
   else if (action === 'select-track') selectTrack(Number(button.getAttribute('data-index')) || 0, true);
   else if (action === 'toggle-tracklist') toggleTracklist();
   else if (action === 'toggle-haptics') {
-    const wasEnabled = hapticsEnabled;
-    if (wasEnabled && navigator.vibrate) { try { navigator.vibrate(8); } catch (error) {} }
     hapticsEnabled = !hapticsEnabled;
+    try { window.parent.__mixtapeHapticsEnabled = hapticsEnabled; } catch (error) {}
+    if (hapticsEnabled) pulseHaptic(8);
     refresh();
     setStatus(hapticsEnabled ? 'Haptic feedback enabled where supported' : 'Haptic feedback turned off');
   }
