@@ -107,6 +107,23 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
   .cd-copy-hint { font-size:11px; }
 }
 
+.player-card.skin-cassette { background:#33372e; border:1px solid #686b5d; border-radius:8px; padding:13px; color:#f2ead9; box-shadow:0 7px 15px rgba(42,37,25,.18); text-align:left; }
+.cassette-shell { background:linear-gradient(135deg,#d7d2c1,#a7a58f 48%,#d6d0be); border:1px solid #eee7d5; border-radius:5px; padding:10px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.6),inset 0 -3px 6px rgba(36,38,29,.15); }
+.cassette-topline { display:flex; justify-content:space-between; gap:8px; color:#414539; font:8px 'DM Mono',monospace; letter-spacing:1.1px; text-transform:uppercase; padding:2px 2px 9px; }
+.cassette-label { position:relative; padding:10px 12px 9px; background:linear-gradient(135deg,#f7edda,#e5d5b8); border:1px solid #a89a7e; color:#37372d; min-height:76px; }
+.cassette-label:after { content:""; position:absolute; right:10px; top:12px; bottom:12px; width:3px; background:repeating-linear-gradient(to bottom,#c6533b 0 5px,transparent 5px 9px); opacity:.8; }
+.cassette-title { font:500 clamp(20px,3vw,30px)/1.12 'Playfair Display',serif; margin:3px 22px 6px 0; color:#282a22; overflow-wrap:anywhere; }
+.cassette-meta { font:8px 'DM Mono',monospace; color:#70654f; letter-spacing:.8px; text-transform:uppercase; overflow-wrap:anywhere; }
+.cassette-window { position:relative; margin:10px 0 9px; min-height:118px; background:linear-gradient(180deg,#373b31,#20231d); border:1px solid #717363; border-radius:4px; padding:12px 13px; display:flex; align-items:center; justify-content:space-around; gap:9px; overflow:hidden; }
+.cassette-window:before { content:""; position:absolute; inset:5px; border:1px solid rgba(237,227,204,.16); border-radius:2px; pointer-events:none; }
+.cassette-reel { position:relative; width:72px; height:72px; border:2px solid #bab59f; border-radius:50%; background:repeating-conic-gradient(#d0c7ae 0 12deg,#777b6d 12deg 26deg,#d0c7ae 26deg 36deg); box-shadow:0 0 0 4px #242720,0 0 0 5px #858875,inset 0 0 0 7px #454a3d; flex:0 0 auto; }
+.cassette-reel:before { content:""; position:absolute; inset:19px; border-radius:50%; background:#d8cdb2; border:2px solid #777560; box-shadow:inset 0 0 0 4px #aba58d; }
+.cassette-reel:after { content:""; position:absolute; width:8px; height:8px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#393c31; border:1px solid #f3e7cb; }
+.cassette-tape { position:absolute; left:29%; right:29%; top:50%; height:17px; transform:translateY(-50%); background:linear-gradient(#b6a889,#e3d6b9 48%,#a5987b); border:1px solid #c9bda1; box-shadow:0 1px 3px #1116; }
+.cassette-window-footer { display:flex; justify-content:space-between; gap:8px; color:#dfd6bf; font:8px 'DM Mono',monospace; letter-spacing:1px; margin-top:8px; }
+.cassette-screws { display:flex; justify-content:space-between; padding:1px 3px 0; }
+.cassette-screws i { width:6px; height:6px; border:1px solid #777766; border-radius:50%; background:#4b4e40; box-shadow:inset 0 0 0 1px #999982; }
+.cassette-note { padding:10px 12px; margin-top:10px; background:#e5decc; border:1px solid #b8ad96; color:#454335; font:italic 13px/1.55 'Playfair Display',serif; white-space:pre-wrap; overflow-wrap:anywhere; }
 .player-card.skin-ipod { background:linear-gradient(135deg,#e9eae7,#c2c7c2); border:1px solid #a6aba5; border-radius:23px; padding:17px 18px 19px; box-shadow:inset 0 0 0 5px #daddd8, inset 0 0 0 6px #a6aba5, 0 8px 15px #b7aea0; color:#202720; }
 .ipod-logo { font:700 11px 'DM Sans',sans-serif; letter-spacing:1.6px; color:#555d56; text-align:center; margin-bottom:12px; }
 .ipod-screen { border:3px solid #788178; background:linear-gradient(#e4e9df,#c8d3c5); border-radius:3px; min-height:150px; padding:10px; text-align:left; box-shadow:inset 0 0 10px #a7b19f; }
@@ -294,6 +311,19 @@ def render_player_card(mix):
             f'<p class="note">{note}</p></div>'
             f'<div class="cd-bottom"><span>CD-R / MIX 01</span><span>Burned with feeling</span><span>44.1 kHz stereo</span></div>'
             f'</div></div>'
+        )
+    elif skin == "Cassette tape":
+        track_count = len(mix.get("tracks", []))
+        markup = (
+            f'<div class="player-card skin-cassette"><div class="cassette-shell">'
+            f'<div class="cassette-topline"><span>mixtape.fm · analogue edition</span><span>TYPE I / NORMAL BIAS</span></div>'
+            f'<div class="cassette-label"><div class="cassette-meta">SIDE A · {track_count:02d} TRACK{"S" if track_count != 1 else ""}</div>'
+            f'<div class="cassette-title">{title}</div><div class="cassette-meta">{people_html}</div></div>'
+            f'<div class="cassette-window"><div class="cassette-reel"></div><div class="cassette-tape"></div>'
+            f'<div class="cassette-reel"></div></div>'
+            f'<div class="cassette-window-footer"><span>HIGH POSITION</span><span>▰ DOLBY NR</span><span>46 MIN</span></div>'
+            f'<div class="cassette-screws"><i></i><i></i><i></i><i></i></div></div>'
+            f'<div class="cassette-note">{note}</div></div>'
         )
     elif skin == "iPod classic":
         if cover_url:
@@ -555,7 +585,7 @@ else:
             recipient = b.text_input("For", placeholder="Their name", max_chars=80)
             note = st.text_area("The note", "Some songs that made me think of you.", max_chars=700, height=115)
             cover = st.text_input("Cover image URL (optional)", placeholder="https://...")
-            skin = st.selectbox("Player style", ["CD player", "iPod classic", "Scrapbook", "Webcore"])
+            skin = st.selectbox("Player style", ["CD player", "Cassette tape", "iPod classic", "Scrapbook", "Webcore"])
 
         with st.expander("Customise all display text", expanded=False):
             st.caption("Edit the home page, player, recipient page, section headings, and playback controls.")
