@@ -189,7 +189,11 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 @media(prefers-reduced-motion:reduce) { .cd-disc,.web-art .bar,.burn-disc,.burn-laser,.burn-led,.burn-progress span { animation:none !important; } }
 
 
-/* Design-system pass: responsive, readable controls; the physical players carry the personality. */
+/* Design-system pass: responsive, readable controls; the physical players carry the personality.
+   Light contrast: ink #18211F / paper #EEF1EE = 14.46:1; muted #52605A / paper = 5.80:1;
+   accent #205F55 / paper = 6.52:1; white / primary accent = 7.42:1.
+   Dark contrast: ink #F1F4F1 / paper #171C1A = 15.57:1; muted #B6C0B9 / paper = 9.22:1;
+   accent #87C9B5 / dark paper = 9.08:1. */
 :root {
   color-scheme: light dark;
   --paper:#EEF1EE; --ink:#18211F; --muted:#52605A; --line:#CDD6D0;
@@ -201,13 +205,14 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 .brand { border-bottom:1px solid var(--line); padding-bottom:14px; }
 .brand b { font:700 23px/1.15 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:-.045em; color:var(--ink); }
 .brand .dot { color:var(--accent); }
-.brand .tag { font:600 11px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.09em; color:var(--muted); }
+.brand .tag { font:600 12px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.09em; color:var(--muted); }
 .hero { padding:clamp(24px,4vw,42px) 0 clamp(20px,3vw,32px); }
 .hero h1 { max-width:16ch; margin:10px 0 14px; font:650 clamp(2.5rem,6vw,4.4rem)/1.04 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:-.055em; color:var(--ink); overflow-wrap:anywhere; }
 .hero h1 em { color:var(--accent); font-style:normal; font-weight:650; }
+.eyebrow { font-size:12px; line-height:1.4; }
 .hero p { max-width:650px; color:var(--muted); font:400 16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
 .panel { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:clamp(14px,2.2vw,22px); margin-bottom:16px; box-shadow:0 1px 2px rgba(24,33,31,.035); }
-.section-title { color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:11px; margin-bottom:15px; font:650 12px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+.section-title { color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:11px; margin-bottom:15px; font:650 13px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.06em; text-transform:uppercase; }
 .stMarkdown, .stMarkdown p, [data-testid="stCaptionContainer"], .stCaption { color:var(--ink); }
 .stMarkdown p { line-height:1.55; }
 label, .stTextInput label, .stTextArea label, .stSelectbox label, .stNumberInput label, .stSlider label, .stRadio label, .stCheckbox label, [data-testid="stWidgetLabel"] p {
@@ -256,7 +261,7 @@ div[data-testid="stExpander"] summary { min-height:44px; }
 @media (max-width:700px) {
   .block-container, [data-testid="stMainBlockContainer"] { padding:16px 14px 32px; }
   .brand b { font-size:21px; }
-  .brand .tag { max-width:155px; font-size:10px; line-height:1.4; }
+  .brand .tag { max-width:155px; font-size:11px; line-height:1.4; }
   .hero h1 { font-size:clamp(2.2rem,10vw,3.4rem); letter-spacing:-.045em; }
   .hero p { font-size:15px; }
   .panel { padding:14px; border-radius:9px; }
@@ -939,15 +944,15 @@ button:active{transform:scale(.97)}
 body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.5}
 button{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;letter-spacing:.01em;min-height:44px;min-width:44px}
 button:focus-visible{outline:3px solid #205F55;outline-offset:3px}
-.device-topline{font-size:10px;line-height:1.45;letter-spacing:.07em}
-.device-meta{font-size:11px;line-height:1.5;letter-spacing:.025em}
-.eyebrow,.cd-kicker,.cd-inner-note,.cd-bottomline,.cassette-small,.cassette-status,.ipod-hint,.scrap-kicker,.scrap-bottom,.web-kicker,.web-badge,.player-status-line,.playback-note{font-size:10px;line-height:1.5;letter-spacing:.045em}
+.device-topline{font-size:12px;line-height:1.45;letter-spacing:.035em}
+.device-meta{font-size:12px;line-height:1.5;letter-spacing:.02em}
+.eyebrow,.cd-kicker,.cd-inner-note,.cd-bottomline,.cassette-small,.cassette-status,.ipod-hint,.scrap-kicker,.scrap-bottom,.web-kicker,.web-badge,.player-status-line,.playback-note{font-size:12px;line-height:1.5;letter-spacing:.02em}
 .device-buttons{gap:8px}
 .device-buttons button{min-height:44px;padding:10px 13px;font-size:11px;letter-spacing:.01em}
 .common-controls{gap:8px}
 .common-controls button,.tracklist-toggle,.haptic-toggle{min-height:44px;padding:10px 12px;font-size:11px;letter-spacing:0}
 .track-pick{min-height:48px;padding:11px 8px}
-.track-pick-number{font-size:12px}
+.track-pick-number{font-size:13px}
 .track-pick-title{font-size:14px;line-height:1.4}
 .track-pick-play{font-size:13px}
 .player-status-line{padding:11px 12px}
@@ -967,7 +972,7 @@ button:focus-visible{outline:3px solid #205F55;outline-offset:3px}
   .cd-copy h2{font-size:clamp(20px,5.8vw,25px)}
   .cd-dedication{font-size:13px;line-height:1.5}
   .cd-disc{width:100%}
-  .cassette-reel{width:56px;height:56px}
+  .cassette-reel{width:58px;height:58px}
   .cassette-reel span{inset:14px}
   .ipod-device{padding:14px}
   .ipod-hint{font-size:10px}
