@@ -337,7 +337,7 @@ def render_burn_animation(copy):
     components.html(animation, height=225, scrolling=False)
 
 
-def render_track_player(tracks, copy, key):
+def render_track_player(tracks, copy, key, skin="CD player"):
     valid = []
     for track in tracks:
         video = yt_id(str(track.get("url", "")))
@@ -356,11 +356,37 @@ def render_track_player(tracks, copy, key):
         "playback_note": str(copy.get("playback_note", DEFAULT_COPY["playback_note"]))[:180],
     }
     labels_json = json.dumps(ui_labels, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
+    theme_class = {"CD player": "theme-cd", "iPod classic": "theme-ipod", "Scrapbook": "theme-scrapbook", "Webcore": "theme-webcore"}.get(skin, "theme-cd")
     component_html = f"""
     <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
     *{{box-sizing:border-box}} body{{margin:0;background:transparent;color:#201e1a;font-family:Arial,sans-serif}}
     .wrap{{border:1px solid #d7cfc1;border-radius:6px;background:#faf7f0;padding:12px}}
+    .theme-cd{{background:linear-gradient(145deg,#ded9cf,#b9b1a5);border-color:#9c9387;border-radius:4px;padding:10px}}
+    .theme-cd .now{{background:#171614;border:1px solid #625b50;border-radius:3px;padding:10px}}
+    .theme-cd .label{{color:#e68a70}}.theme-cd .song{{color:#f4eddf}}
+    .theme-cd .actions button{{border-radius:2px;background:#292722;border-color:#625b50;color:#f4eddf}}
+    .theme-cd .actions button.primary{{background:#c6533b;border-color:#e18c74}}
+    .theme-cd #ytplayer{{border:5px solid #292722;border-radius:3px}}
+    .theme-ipod{{background:linear-gradient(135deg,#e7e9e4,#c5cbc4);border:5px solid #d8dcd6;border-radius:18px;box-shadow:inset 0 0 0 1px #969f96;padding:10px}}
+    .theme-ipod .now{{background:#d6e0d0;border:2px solid #7c8979;border-radius:2px;padding:9px;box-shadow:inset 0 0 8px #a4b09e}}
+    .theme-ipod .label{{color:#425242}}.theme-ipod .song{{color:#202b20}}
+    .theme-ipod .actions{{justify-content:center}}
+    .theme-ipod .actions button{{background:linear-gradient(#fdfdfb,#d4d9d3);border:1px solid #9ca49b;color:#3e483e;border-radius:22px;min-width:68px;box-shadow:0 2px 2px #abb1a9}}
+    .theme-ipod .actions button.primary{{background:linear-gradient(#d9dfd8,#b7c0b5);color:#243124;border-color:#8c9889}}
+    .theme-ipod #ytplayer{{border:3px solid #798779;border-radius:3px}}
+    .theme-scrapbook{{background:#f0dfc2;border:2px dashed #b99b70;border-radius:2px;box-shadow:3px 4px 0 #cbb18a;padding:13px}}
+    .theme-scrapbook .now{{background:#fff4df;border:1px dashed #cbb18a;padding:10px;transform:rotate(-.2deg)}}
+    .theme-scrapbook .label{{color:#9b442f}}.theme-scrapbook .song{{color:#4b3828}}
+    .theme-scrapbook .actions button{{background:#7b5b40;border-color:#7b5b40;color:#fff5e6;border-radius:16px}}
+    .theme-scrapbook .actions button.primary{{background:#bc4d36;border-color:#bc4d36}}
+    .theme-scrapbook #ytplayer{{border:4px solid #fff4df;box-shadow:2px 3px 0 #cbb18a}}
+    .theme-webcore{{background:#16162f;border:2px solid #ff62c9;border-radius:2px;box-shadow:5px 5px 0 #69ead3;padding:10px}}
+    .theme-webcore .now{{background:#dbd5ff;border:2px solid #ff62c9;padding:9px}}
+    .theme-webcore .label{{color:#5c46a8}}.theme-webcore .song{{color:#211e40}}
+    .theme-webcore .actions button{{background:#29244f;border:1px solid #ff62c9;border-radius:0;color:#f8e8ff;text-shadow:1px 1px #5c46a8}}
+    .theme-webcore .actions button.primary{{background:#ff62c9;border-color:#69ead3;color:#17172c}}
+    .theme-webcore #ytplayer{{border:2px solid #69ead3;border-radius:0}}
     .now{{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}}
     .label{{font:10px monospace;letter-spacing:1.5px;color:#c6533b;text-transform:uppercase}}
     .song{{font:600 13px Arial,sans-serif;color:#292620;overflow-wrap:anywhere;margin-top:4px}}
@@ -370,7 +396,7 @@ def render_track_player(tracks, copy, key):
     #ytplayer{{width:100%;aspect-ratio:16/9;min-height:220px;border:0;border-radius:4px;background:#211f1c}}
     .foot{{font:10px monospace;color:#746b5f;margin-top:8px;letter-spacing:.5px;overflow-wrap:anywhere}}
     @media(max-width:540px){{#ytplayer{{min-height:190px}}button{{padding:9px 10px}}}}
-    </style></head><body><div class="wrap">
+    </style></head><body><div class="wrap {theme_class}">
       <div class="now"><div><div class="label" id="nowPlayingLabel"></div><div class="song" id="songTitle"></div></div>
       <div class="label" id="trackCount"></div></div>
       <div class="actions">
@@ -463,7 +489,7 @@ if incoming:
         unsafe_allow_html=True,
     )
     render_player_card({**incoming, "copy": copy})
-    render_track_player(incoming.get("tracks", []), copy, "recipient")
+    render_track_player(incoming.get("tracks", []), copy, "recipient", incoming.get("skin", "CD player"))
     st.markdown('<div class="footer">' + html.escape(str(copy.get("footer_text", DEFAULT_COPY["footer_text"]))) + '</div>', unsafe_allow_html=True)
     if st.button(str(copy.get("make_own_label", DEFAULT_COPY["make_own_label"]))):
         st.query_params.clear()
@@ -550,7 +576,7 @@ else:
             valid_tracks = mix["tracks"]
             st.caption(f"{len(valid_tracks)} valid YouTube track(s)")
             if valid_tracks:
-                render_track_player(valid_tracks, copy_values, "preview")
+                render_track_player(valid_tracks, copy_values, "preview", skin)
             else:
                 st.info("Add at least one valid YouTube link to preview playback controls.")
 
