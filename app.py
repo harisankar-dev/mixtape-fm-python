@@ -293,7 +293,7 @@ def install_haptic_bridge():
           "button,a,[role=button],input,textarea,select,[data-baseweb=select]{transition:transform .08s ease,filter .08s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}",
           "button:active,a:active,[role=button]:active{transform:scale(.985)!important;filter:brightness(.95)}",
           "@media(prefers-reduced-motion:reduce){button,a,[role=button],input,textarea,select{transition:none!important}}"
-        ].join("\\n");
+        ].join(" ");
         host.document.head.appendChild(style);
         let lastTap = 0;
         const tapTarget = "button,a,input,textarea,select,[role=button],[role=option],[data-baseweb=select]";
@@ -934,11 +934,68 @@ button:active{transform:scale(.97)}
 .device-status[hidden]{display:none}
 @media(max-width:520px){.player-shell{padding:5px;gap:8px}.cd-layout{grid-template-columns:minmax(100px,.9fr) minmax(0,1.1fr);gap:9px}.cd-copy h2{font-size:21px}.cd-dedication{font-size:11px}.cd-disc{width:100%}.cassette-reel{width:55px;height:55px}.cassette-reel span{inset:14px}.ipod-device{padding:14px}.ipod-wheel{width:145px;height:145px}.player-status-line{padding:8px}.common-controls button,.tracklist-toggle,.haptic-toggle{padding:8px}}
 @media(prefers-reduced-motion:reduce){.cd-disc,.cassette-device.is-playing .cassette-reel,.webcore-device.is-playing .equalizer-bar{animation:none!important}}
+/* Accessible embedded player: readable labels, generous touch targets, and optional motion. */
+:root{color-scheme:light dark}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.5}
+button{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;letter-spacing:.01em;min-height:44px;min-width:44px}
+button:focus-visible{outline:3px solid #205F55;outline-offset:3px}
+.device-topline{font-size:10px;line-height:1.45;letter-spacing:.07em}
+.device-meta{font-size:11px;line-height:1.5;letter-spacing:.025em}
+.eyebrow,.cd-kicker,.cd-inner-note,.cd-bottomline,.cassette-small,.cassette-status,.ipod-hint,.scrap-kicker,.scrap-bottom,.web-kicker,.web-badge,.player-status-line,.playback-note{font-size:10px;line-height:1.5;letter-spacing:.045em}
+.device-buttons{gap:8px}
+.device-buttons button{min-height:44px;padding:10px 13px;font-size:11px;letter-spacing:.01em}
+.common-controls{gap:8px}
+.common-controls button,.tracklist-toggle,.haptic-toggle{min-height:44px;padding:10px 12px;font-size:11px;letter-spacing:0}
+.track-pick{min-height:48px;padding:11px 8px}
+.track-pick-number{font-size:12px}
+.track-pick-title{font-size:14px;line-height:1.4}
+.track-pick-play{font-size:13px}
+.player-status-line{padding:11px 12px}
+.empty-tracks{font-size:14px;line-height:1.5}
+.ipod-wheel{width:176px;height:176px}
+.ipod-wheel button{min-width:44px;min-height:44px;font-size:10px}
+.ipod-wheel .wheel-menu{top:4px;left:calc(50% - 32px);width:64px;height:44px}
+.ipod-wheel .wheel-prev{left:0;top:calc(50% - 22px);width:48px;height:44px}
+.ipod-wheel .wheel-next{right:0;top:calc(50% - 22px);width:48px;height:44px}
+.ipod-wheel .wheel-stop{left:calc(50% - 22px);bottom:0;width:44px;height:44px}
+.ipod-wheel .wheel-center{left:calc(50% - 27px);top:calc(50% - 27px);width:54px;height:54px;min-width:54px;min-height:54px}
+.web-browser-bar button{width:44px;height:44px;min-width:44px;min-height:44px;flex:0 0 44px}
+.device-status[hidden],.tracklist-panel[hidden],.cd-case-open-note[hidden]{display:none!important}
+@media(max-width:520px){
+  .player-shell{padding:7px;gap:10px}
+  .cd-layout{grid-template-columns:minmax(100px,.9fr) minmax(0,1.1fr);gap:10px}
+  .cd-copy h2{font-size:clamp(20px,5.8vw,25px)}
+  .cd-dedication{font-size:13px;line-height:1.5}
+  .cd-disc{width:100%}
+  .cassette-reel{width:56px;height:56px}
+  .cassette-reel span{inset:14px}
+  .ipod-device{padding:14px}
+  .ipod-hint{font-size:10px}
+  .common-controls button,.tracklist-toggle,.haptic-toggle{flex:1 1 42%;min-width:44px}
+  .player-status-line{gap:6px;font-size:10px}
+}
+@media(prefers-color-scheme:dark){
+  .player-shell{border-color:#3B4540;background:#171C1A}
+  .player-status-line{background:#252D29;color:#F1F4F1}
+  .player-status-line #playerStatus{color:#B6C0B9}
+  .playback-note{color:#B6C0B9}
+  .common-controls button,.tracklist-toggle,.haptic-toggle{background:#212825;color:#F1F4F1;border-color:#3B4540}
+  .tracklist-panel{background:#212825;border-color:#3B4540}
+  .track-pick{color:#F1F4F1;border-color:#3B4540}
+  .track-pick[aria-current="true"]{background:#293D36}
+  .track-pick-number,.track-pick-play{color:#A1D9C8}
+  .empty-tracks{color:#B6C0B9}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+  button:active{transform:none!important}
+}
+
 </style>
 </head><body>
 <div class="player-shell @@PLAYER_THEME@@">
   @@DEVICE_MARKUP@@
-  <div class="player-status-line"><span id="nowPlayingLabel"></span><span id="playerStatus">Preparing player…</span><span id="trackCounter"></span></div>
+  <div class="player-status-line"><span id="nowPlayingLabel"></span><span id="playerStatus" role="status" aria-live="polite">Preparing player…</span><span id="trackCounter" aria-label="Track position"></span></div>
   <div class="common-controls">
     <button data-action="toggle-tracklist" class="tracklist-toggle" id="tracklistToggle">TRACKLIST</button>
     <button data-action="previous" id="prevGlobal">◀ PREV</button>
@@ -959,6 +1016,9 @@ let player = null;
 let ready = false;
 let playing = false;
 let hapticsEnabled = true;
+try {
+  if (window.parent && window.parent.__mixtapeHapticsEnabled === false) hapticsEnabled = false;
+} catch (error) {}
 try {
   if (window.parent && window.parent.__mixtapeHapticsEnabled === false) hapticsEnabled = false;
 } catch (error) {}
@@ -995,6 +1055,8 @@ function refresh() {
   document.getElementById('playbackNote').textContent = labels.playbackNote;
   document.querySelectorAll('[data-play-label]').forEach(function(button) {
     button.textContent = playing ? labels.pause : labels.play;
+    button.setAttribute('aria-pressed', String(playing));
+    button.setAttribute('aria-label', playing ? 'Pause playback' : 'Play playback');
   });
   const ipodIcon = document.querySelector('[data-role="ipod-play-icon"]');
   if (ipodIcon) ipodIcon.textContent = playing ? 'Ⅱ' : '▶';
@@ -1020,7 +1082,17 @@ function refresh() {
   const caseNote = document.getElementById('caseOpenNote');
   if (caseNote) caseNote.hidden = !document.getElementById('cdCase').classList.contains('is-open');
   const hapticButton = document.getElementById('hapticToggle');
-  if (hapticButton) hapticButton.textContent = hapticsEnabled ? 'HAPTICS ON' : 'HAPTICS OFF';
+  if (hapticButton) {
+    let supported = false;
+    try {
+      supported = typeof navigator.vibrate === 'function' ||
+        (window.parent && window.parent.navigator && typeof window.parent.navigator.vibrate === 'function');
+    } catch (error) {}
+    hapticButton.textContent = !supported ? 'VIBRATION UNAVAILABLE' : (hapticsEnabled ? 'HAPTICS ON' : 'HAPTICS OFF');
+    hapticButton.disabled = !supported;
+    hapticButton.title = supported ? 'Toggle vibration feedback' : 'This browser does not expose vibration feedback; visual feedback remains enabled.';
+    hapticButton.setAttribute('aria-pressed', String(hapticsEnabled));
+  }
 }
 function selectTrack(index, autoPlay) {
   if (!ready || !player || !songs.length) {
@@ -1058,6 +1130,9 @@ function toggleTracklist() {
   if (hidden) panel.removeAttribute('hidden');
   else panel.setAttribute('hidden', '');
   document.getElementById('tracklistToggle').textContent = hidden ? 'HIDE TRACKLIST' : 'TRACKLIST';
+  document.querySelectorAll('[data-action="toggle-tracklist"]').forEach(function(item) {
+    item.setAttribute('aria-expanded', String(hidden));
+  });
   setStatus(hidden ? 'Choose a track from the list' : 'Tracklist closed');
 }
 function doAction(action, button) {
