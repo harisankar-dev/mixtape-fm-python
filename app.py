@@ -301,7 +301,7 @@ def install_haptic_bridge():
         ].join(" ");
         host.document.head.appendChild(style);
         let lastTap = 0;
-        const tapTarget = "button,a,input,textarea,select,[role=button],[role=option],[data-baseweb=select]";
+        const tapTarget = "button,a,[role=button],[role=option]";
         host.document.addEventListener("pointerdown", function (event) {
           if (host.__mixtapeHapticsEnabled === false) return;
           if (!event.target || !event.target.closest || !event.target.closest(tapTarget)) return;
@@ -371,7 +371,7 @@ DEFAULT_COPY = {
     "tracklist_heading": "The tracklist",
     "preview_heading": "A little preview",
     "footer_text": "",
-    "brand_tagline": "PERSONAL MIXTAPE STUDIO",
+    "brand_tagline": "",
     "burn_button_label": "Burn this mixtape ↗",
     "share_button_label": "Open / share mixtape",
     "make_own_label": "Make your own mixtape",
@@ -393,9 +393,10 @@ def sync_copy_value(key):
 
 
 def render_brand(copy):
-    tagline = html.escape(str(copy.get("brand_tagline", DEFAULT_COPY["brand_tagline"])))
+    tagline = html.escape(str(copy.get("brand_tagline", DEFAULT_COPY["brand_tagline"])).strip())
+    tagline_markup = f'<div class="tag">{tagline}</div>' if tagline else ""
     st.markdown(
-        f'<div class="brand"><b>mixtape<span class="dot">.</span>fm</b><div class="tag">{tagline}</div></div>',
+        f'<div class="brand"><b>mixtape<span class="dot">.</span>fm</b>{tagline_markup}</div>',
         unsafe_allow_html=True,
     )
 
