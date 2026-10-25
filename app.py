@@ -558,6 +558,459 @@ def render_track_player(tracks, copy, key, skin="CD player"):
     """
     components.html(component_html, height=545, scrolling=False)
 
+
+def render_interactive_player(mix, copy, key):
+    """Render the device, its physical controls, and the YouTube player in one iframe.
+
+    Keeping the card and player together means device buttons control the same
+    YouTube instance rather than acting as decorative artwork.
+    """
+    skin = str(mix.get("skin", "CD player"))
+    title = html.escape(str(mix.get("title", "Untitled mixtape"))[:100])
+    sender = html.escape(str(mix.get("sender", ""))[:80])
+    recipient = html.escape(str(mix.get("recipient", ""))[:80])
+    note = html.escape(str(mix.get("note", ""))[:700])
+    side = html.escape(str(copy.get("side_label", DEFAULT_COPY.get("side_label", "Side A")))[:30])
+    kicker = html.escape(str(copy.get("player_kicker", DEFAULT_COPY.get("player_kicker", "A mixtape, made just for you")))[:100])
+    hint = html.escape(str(copy.get("player_hint", DEFAULT_COPY.get("player_hint", "Press play whenever you need it")))[:100])
+    cover = str(mix.get("cover", "")).strip()
+    cover_url = html.escape(cover, quote=True) if cover.startswith(("https://", "http://")) else ""
+    people = " · ".join(value for value in ([f"From {sender}" if sender else "", f"For {recipient}" if recipient else ""]) if value)
+    people_html = html.escape(people or hint)
+
+    tracks = []
+    for track in mix.get("tracks", [])[:20]:
+        video_id = yt_id(str(track.get("url", "")))
+        if video_id:
+            tracks.append({"id": video_id, "title": str(track.get("title", "Untitled track"))[:120]})
+    tracks_json = json.dumps(tracks, ensure_ascii=True, separators=(",", ":")).replace("<", "\\u003c")
+    labels = {
+        "nowPlaying": str(copy.get("now_playing_label", "Now playing"))[:100],
+        "play": str(copy.get("play_button_label", "▶ PLAY"))[:40],
+        "pause": str(copy.get("pause_button_label", "Ⅱ PAUSE"))[:40],
+        "previous": str(copy.get("previous_button_label", "◀ PREV"))[:40],
+        "next": str(copy.get("next_button_label", "NEXT ▶"))[:40],
+        "playbackNote": str(copy.get("playback_note", "Playback is provided by YouTube."))[:180],
+    }
+    labels_json = json.dumps(labels, ensure_ascii=True, separators=(",", ":")).replace("<", "\\u003c")
+
+    if skin == "CD player":
+        label_art = f'<img src="{cover_url}" alt="Cover art">' if cover_url else side
+        device_markup = (
+            f'<div class="device cd-device" id="devicePanel">'
+            f'<div class="cd-case" id="cdCase"><div class="cd-case-lid"></div><div class="cd-jewel">'
+            f'<div class="device-topline"><span>mixtape.fm / compact disc</span><span class="case-serial">CD-R 01</span></div>'
+            f'<div class="cd-layout"><button class="cd-disc-touch" data-action="toggle-play" aria-label="Play or pause mixtape">'
+            f'<span class="cd-disc"><span class="cd-sheen"></span><span class="cd-disc-label">{label_art}</span><span class="cd-hole"></span></span></button>'
+            f'<div class="cd-copy"><div class="eyebrow">PERSONAL COMPILATION</div><h2>{title}</h2>'
+            f'<div class="device-meta">{people_html}</div><div class="accent-rule"></div>'
+            f'<p class="cd-dedication">{note}</p><div class="cd-kicker">{kicker}</div></div></div>'
+            f'<div class="cd-inner-note"><span>INSIDE THE CASE</span><span>{len(tracks):02d} TRACKS · SIDE A</span></div>'
+            f'<div class="device-buttons cd-buttons"><button data-action="previous" aria-label="Previous track">◀◀ PREV</button>'
+            f'<button data-action="toggle-play" data-play-label>▶ PLAY</button><button data-action="next" aria-label="Next track">NEXT ▶▶</button>'
+            f'<button data-action="eject" id="caseButton">OPEN CASE</button></div>'
+            f'<div class="cd-case-open-note" id="caseOpenNote" hidden>CASE OPEN · SELECT A TRACK BELOW</div>'
+            f'<div class="cd-bottomline"><span>44.1 kHz stereo</span><span>Made for one person</span></div>'
+            f'</div></div></div>'
+        )
+        theme_class = "theme-cd"
+    elif skin == "Cassette tape":
+        device_markup = (
+            f'<div class="device cassette-device" id="devicePanel"><div class="cassette-shell">'
+            f'<div class="device-topline"><span>mixtape.fm · analogue edition</span><span>TYPE I / NORMAL BIAS</span></div>'
+            f'<div class="cassette-label"><div class="cassette-small">SIDE A · {len(tracks):02d} TRACKS</div>'
+            f'<h2>{title}</h2><div class="cassette-small">{people_html}</div></div>'
+            f'<div class="cassette-window"><button class="cassette-reel" data-action="toggle-play" aria-label="Play or pause cassette"><span></span></button>'
+            f'<div class="cassette-tape-strip"></div><button class="cassette-reel" data-action="toggle-play" aria-label="Play or pause cassette"><span></span></button></div>'
+            f'<div class="cassette-status" id="cassetteStatus">STOPPED · PRESS PLAY</div>'
+            f'<p class="cassette-note">{note}</p>'
+            f'<div class="device-buttons cassette-buttons"><button data-action="previous" aria-label="Rewind to previous track">◀◀ REW</button>'
+            f'<button data-action="stop">■ STOP</button><button data-action="toggle-play" data-play-label>▶ PLAY</button>'
+            f'<button data-action="next" aria-label="Fast forward to next track">FF ▶▶</button></div>'
+            f'</div></div>'
+        )
+        theme_class = "theme-cassette"
+    elif skin == "iPod classic":
+        if cover_url:
+            art = f'<img class="ipod-cover" src="{cover_url}" alt="Cover art">'
+        else:
+            art = '<div class="ipod-cover blank">MIX<br>FM</div>'
+        device_markup = (
+            f'<div class="device ipod-device" id="devicePanel"><div class="ipod-logo">iPod</div>'
+            f'<div class="ipod-screen"><div class="ipod-screen-top"><span>♫ MUSIC</span><span id="ipodPlayStatus">READY</span></div>'
+            f'<div class="ipod-screen-main">{art}<div class="ipod-track"><strong>{title}</strong>'
+            f'<small>{people_html}</small><small id="ipodTrackTitle">Select a track to begin</small></div></div>'
+            f'<div class="ipod-note">{note}</div></div>'
+            f'<div class="ipod-wheel" aria-label="iPod click wheel">'
+            f'<button class="wheel-menu" data-action="toggle-tracklist">MENU</button>'
+            f'<button class="wheel-prev" data-action="previous" aria-label="Previous track">◀◀</button>'
+            f'<button class="wheel-next" data-action="next" aria-label="Next track">▶▶</button>'
+            f'<button class="wheel-stop" data-action="stop" aria-label="Stop playback">■</button>'
+            f'<button class="wheel-center" data-action="toggle-play" aria-label="Play or pause"><span data-role="ipod-play-icon">▶</span></button>'
+            f'</div><div class="ipod-hint">MENU: TRACKLIST · LEFT / RIGHT: SKIP · CENTER: PLAY</div></div>'
+        )
+        theme_class = "theme-ipod"
+    elif skin == "Scrapbook":
+        if cover_url:
+            photo = f'<img src="{cover_url}" alt="Cover art">'
+        else:
+            photo = '<span class="photo-placeholder">♫</span>'
+        device_markup = (
+            f'<div class="device scrapbook-device" id="devicePanel"><div class="scrap-paper">'
+            f'<div class="scrap-tape"></div><div class="scrap-tag">HANDMADE MIX</div>'
+            f'<div class="scrap-kicker">{kicker}</div><button class="scrap-photo" data-action="toggle-play" aria-label="Play or pause mixtape">{photo}</button>'
+            f'<h2>{title}</h2><div class="device-meta">{people_html}</div><p class="scrap-note">{note}</p>'
+            f'<div class="device-buttons"><button data-action="previous">◀ PREV</button><button data-action="toggle-play" data-play-label>▶ PLAY</button>'
+            f'<button data-action="next">NEXT ▶</button><button data-action="toggle-tracklist">TRACKLIST</button></div>'
+            f'<div class="scrap-bottom">SIDE A · MADE FOR YOU</div></div></div>'
+        )
+        theme_class = "theme-scrapbook"
+    else:
+        bars = "".join(f'<span class="equalizer-bar" style="height:{height}px"></span>' for height in [17, 30, 47, 23, 59, 35, 45, 20, 65, 31, 53, 26, 42, 18, 61, 33, 47, 22])
+        device_markup = (
+            f'<div class="device webcore-device" id="devicePanel"><div class="web-browser-bar">'
+            f'<span class="web-dot"></span><span class="web-window-label">MIXTAPE.EXE / PLAYER_01</span>'
+            f'<button data-action="toggle-tracklist" aria-label="Toggle tracklist">−</button><button data-action="stop" aria-label="Stop playback">×</button></div>'
+            f'<div class="web-screen"><div class="web-badge">NOW LOADING: FEELINGS</div><div class="web-kicker">{kicker}</div>'
+            f'<h2>{title}</h2><div class="device-meta">{people_html}</div><div class="web-art">{bars}</div>'
+            f'<p class="web-note">{note}</p><div class="device-buttons"><button data-action="previous">◀ PREV</button>'
+            f'<button data-action="toggle-play" data-play-label>▶ PLAY</button><button data-action="next">NEXT ▶</button></div></div></div>'
+        )
+        theme_class = "theme-webcore"
+
+    track_buttons = []
+    for index, track in enumerate(tracks):
+        track_title = html.escape(str(track.get("title", "Untitled track"))[:120])
+        track_buttons.append(
+            f'<button class="track-pick" data-action="select-track" data-index="{index}">'
+            f'<span class="track-pick-number">{index + 1:02d}</span><span class="track-pick-title">{track_title}</span>'
+            f'<span class="track-pick-play">▶</span></button>'
+        )
+    tracklist_markup = "".join(track_buttons) if track_buttons else '<div class="empty-tracks">Add a valid YouTube URL to enable playback.</div>'
+
+    template = r"""<!doctype html>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:transparent;color:#24221d;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid #c6533b;outline-offset:3px}
+button:active{transform:scale(.97)}
+.player-shell{width:100%;padding:8px;border:1px solid #d7cfc1;border-radius:7px;background:#f7f2e9;display:grid;gap:11px}
+.device{position:relative;width:100%;overflow:hidden}
+.device h2{overflow-wrap:anywhere}
+.device-topline{display:flex;justify-content:space-between;align-items:center;gap:8px;font:8px monospace;letter-spacing:1px;text-transform:uppercase;color:#70685a}
+.device-meta{font:9px/1.55 monospace;letter-spacing:.5px;text-transform:uppercase;overflow-wrap:anywhere;color:#6b6254}
+.device-buttons{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:11px}
+.device-buttons button{border-radius:3px;padding:9px 11px;border:1px solid #6c6254;background:#312f29;color:#f6f0e5;font:9px monospace;letter-spacing:.6px;min-height:34px}
+.device-buttons button:disabled{opacity:.35;cursor:default}
+.eyebrow{font:9px monospace;letter-spacing:1.5px;color:#c6533b;text-transform:uppercase}
+.player-status-line{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:#201e1a;color:#f3eee4;border-radius:4px;padding:10px 12px;font:10px monospace;letter-spacing:.6px}
+.player-status-line #playerStatus{overflow-wrap:anywhere;color:#e6c6ad}
+.player-status-line #trackCounter{white-space:nowrap}
+.playback-note{font:10px monospace;color:#746b5f;padding:0 2px}
+.player-video{width:100%;border-radius:4px;overflow:hidden;background:#171614;border:1px solid #d7cfc1}
+#ytplayer{width:100%;min-height:210px;aspect-ratio:16/9;border:0;display:block}
+.common-controls{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.common-controls button,.tracklist-toggle,.haptic-toggle{border:1px solid #c9bfae;border-radius:3px;background:#fcf8ef;color:#24221d;padding:9px 10px;font:9px monospace;letter-spacing:.5px;min-height:34px}
+.common-controls button:disabled{opacity:.4;cursor:default}
+.tracklist-panel{border:1px solid #d7cfc1;border-radius:4px;padding:8px;background:#fbf7ef}
+.tracklist-panel[hidden]{display:none!important}
+.track-pick{width:100%;display:flex;align-items:center;gap:10px;border:0;border-bottom:1px solid #e1d8c9;background:transparent;color:#28251f;text-align:left;padding:10px 6px;min-height:40px}
+.track-pick:last-child{border-bottom:0}
+.track-pick[aria-current="true"]{background:#eee1d0}
+.track-pick-number{font:10px monospace;color:#c6533b}
+.track-pick-title{flex:1;min-width:0;font:12px Arial,sans-serif;overflow-wrap:anywhere}
+.track-pick-play{font-size:11px;color:#c6533b}
+.empty-tracks{font:12px Arial,sans-serif;color:#70685a;padding:12px}
+.cd-device{padding:10px;border:1px solid #d7cbbb;border-radius:7px;background:#e6ddcf;box-shadow:0 5px 0 #d0c6b7}
+.cd-case{position:relative;padding:12px;border:1px solid #fff8eb;border-radius:4px;background:linear-gradient(135deg,#fcf8f0,#e7dece 50%,#f7f1e7);box-shadow:inset 0 0 0 1px #d0c4b2;transition:transform .25s}
+.cd-case-lid{height:5px;border-radius:3px;background:linear-gradient(90deg,#c6baa7,#fff9ef,#c6baa7);margin-bottom:10px;transition:height .25s,transform .25s}
+.cd-case.is-open .cd-case-lid{height:15px;transform:perspective(500px) rotateX(18deg);background:linear-gradient(#b9ab95,#f5ead7)}
+.cd-layout{display:grid;grid-template-columns:minmax(115px,.9fr) minmax(0,1.1fr);gap:12px;align-items:center;padding:15px 0}
+.cd-disc-touch{border:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;width:100%;display:flex;align-items:center;justify-content:center;min-width:0}
+.cd-disc{display:block;position:relative;isolation:isolate;width:min(100%,165px);aspect-ratio:1;border-radius:50%;border:1px solid #b1a995;background:repeating-radial-gradient(circle,rgba(255,255,255,.42) 0 1px,transparent 2px 5px),conic-gradient(from 5deg,#a9c4c9,#e7d7c8 10%,#b8b2d7 20%,#ecddc2 30%,#a9d5d0 42%,#e3c3cf 54%,#b4c7d8 67%,#f0e4c9 80%,#a6c7c8 91%,#a9c4c9);box-shadow:0 0 0 4px rgba(255,255,255,.45),0 0 0 5px #b5a996,0 5px 12px #473a2b33}
+.cd-disc:before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 35deg,transparent,rgba(255,255,255,.6),transparent 80deg,rgba(255,255,255,.2) 145deg,transparent 190deg,rgba(255,255,255,.5) 260deg,transparent 310deg);mix-blend-mode:screen;pointer-events:none}
+.cd-sheen{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.45);border-radius:50%}
+.cd-disc-label{position:absolute;width:46%;height:46%;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#c6533b;border:2px solid #f5eadc;color:#fff8ec;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center;font:8px/1.25 monospace;padding:4px;box-shadow:0 0 0 2px #a99b88}
+.cd-disc-label img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.cd-hole{position:absolute;width:8px;height:8px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#e6dfd3;border:1px solid #756c5e;z-index:2}
+.cd-copy{min-width:0;text-align:left}.cd-copy h2{margin:8px 0 10px;font:500 clamp(21px,3vw,31px)/1.1 Georgia,serif;color:#28241f;letter-spacing:-.4px}
+.cd-copy .accent-rule{width:32px;height:2px;background:#c6533b;margin:10px 0}
+.cd-dedication{font:italic 12px/1.5 Georgia,serif;color:#514737;overflow-wrap:anywhere;margin:0 0 9px}
+.cd-kicker{font:8px/1.5 monospace;color:#7a6a57;text-transform:uppercase;letter-spacing:.6px}
+.cd-inner-note{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;padding:9px 1px;border-top:1px solid #d8cbb9;color:#897a65;font:8px monospace;letter-spacing:1px}
+.cd-buttons button{background:#2a2924;border-color:#60594c}.cd-buttons [data-action="eject"]{background:#eee5d7;color:#6d5c49;border-color:#b7a792}
+.cd-bottomline{display:flex;justify-content:space-between;gap:8px;color:#857765;font:8px monospace;letter-spacing:.5px;text-transform:uppercase;margin-top:10px}
+.cd-case-open-note{font:9px monospace;color:#c6533b;background:#f4e9d9;padding:8px;border-radius:3px;margin-top:6px}
+.cd-case-open-note[hidden]{display:none!important}
+.cd-device.is-playing .cd-disc{animation:disc-rotate 9s linear infinite}
+@keyframes disc-rotate{to{transform:rotate(360deg)}}
+.cassette-device{background:#32362e;border:1px solid #666b5a;border-radius:7px;padding:12px;box-shadow:0 5px 0 #c3b9a7}
+.cassette-shell{background:linear-gradient(135deg,#d7d2c1,#a7a58f 48%,#d6d0be);border:1px solid #eee7d5;border-radius:4px;padding:10px}
+.cassette-label{padding:10px 12px;background:linear-gradient(135deg,#f7edda,#e5d5b8);border:1px solid #a89a7e;color:#37372d}
+.cassette-small{font:8px monospace;color:#70654f;letter-spacing:.8px;text-transform:uppercase;overflow-wrap:anywhere}
+.cassette-label h2{font:500 clamp(20px,3vw,30px)/1.1 Georgia,serif;color:#282a22;margin:5px 0 7px;overflow-wrap:anywhere}
+.cassette-window{position:relative;margin:10px 0 8px;min-height:108px;background:linear-gradient(#373b31,#20231d);border:1px solid #717363;border-radius:4px;padding:12px 13px;display:flex;align-items:center;justify-content:space-around;gap:9px;overflow:hidden}
+.cassette-reel{position:relative;padding:0!important;width:68px;height:68px;flex:0 0 auto;border:2px solid #bab59f!important;border-radius:50%!important;background:repeating-conic-gradient(#d0c7ae 0 12deg,#777b6d 12deg 26deg,#d0c7ae 26deg 36deg)!important;box-shadow:0 0 0 4px #242720,0 0 0 5px #858875,inset 0 0 0 7px #454a3d}
+.cassette-reel span{position:absolute;inset:18px;border-radius:50%;background:#d8cdb2;border:2px solid #777560;box-shadow:inset 0 0 0 4px #aba58d}
+.cassette-reel span:after{content:"";position:absolute;width:7px;height:7px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#393c31;border:1px solid #f3e7cb}
+.cassette-tape-strip{position:absolute;left:29%;right:29%;top:50%;height:15px;transform:translateY(-50%);background:linear-gradient(#b6a889,#e3d6b9 48%,#a5987b);border:1px solid #c9bda1;pointer-events:none}
+.cassette-status{text-align:right;color:#dfd6bf;font:8px monospace;letter-spacing:1px}
+.cassette-note{padding:9px 10px;margin:9px 0 0;background:#e5decc;border:1px solid #b8ad96;color:#454335;font:italic 12px/1.5 Georgia,serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.cassette-device.is-playing .cassette-reel{animation:spool-rotate .85s linear infinite}
+@keyframes spool-rotate{to{transform:rotate(360deg)}}
+.ipod-device{max-width:430px;margin:0 auto;background:linear-gradient(135deg,#e9eae7,#c2c7c2);border:1px solid #a6aba5;border-radius:24px;padding:16px 18px 18px;box-shadow:inset 0 0 0 5px #daddd8,inset 0 0 0 6px #a6aba5,0 8px 15px #b7aea0}
+.ipod-logo{text-align:center;color:#555d56;font:700 12px Arial,sans-serif;letter-spacing:1.5px;margin-bottom:11px}
+.ipod-screen{border:3px solid #788178;background:linear-gradient(#e4e9df,#c8d3c5);border-radius:3px;min-height:144px;padding:10px;text-align:left;box-shadow:inset 0 0 10px #a7b19f}
+.ipod-screen-top{display:flex;justify-content:space-between;border-bottom:1px solid #a2ad9c;padding-bottom:6px;color:#4c584b;font:8px monospace}
+.ipod-screen-main{display:flex;align-items:center;gap:10px;padding-top:9px}
+.ipod-cover{width:60px;height:60px;flex:0 0 60px;object-fit:cover;border:1px solid #8d9988}.ipod-cover.blank{display:grid;place-items:center;background:repeating-linear-gradient(135deg,#aab9a4 0 7px,#d2ddcc 7px 14px);font:10px monospace;color:#3d4a3b}
+.ipod-track{min-width:0;font:600 12px/1.25 Arial,sans-serif;color:#263126;overflow-wrap:anywhere}.ipod-track small{display:block;font:9px/1.5 Arial,sans-serif;color:#546151;margin-top:4px}
+.ipod-note{font:italic 10px/1.35 Arial,sans-serif;color:#465343;overflow-wrap:anywhere;margin-top:7px}
+.ipod-wheel{width:160px;height:160px;border-radius:50%;margin:17px auto 0;position:relative;background:linear-gradient(145deg,#fbfcfa,#d6d9d5);border:1px solid #9ea39d;box-shadow:inset 0 1px 3px #fff,0 2px 3px #a9aca6}
+.ipod-wheel button{position:absolute;border:0;background:transparent;color:#727972;font:8px Arial,sans-serif;padding:0;min-width:28px;min-height:26px}
+.ipod-wheel .wheel-menu{top:11px;left:calc(50% - 25px);width:50px;font-weight:700}
+.ipod-wheel .wheel-prev{left:5px;top:calc(50% - 13px);width:42px;height:26px}
+.ipod-wheel .wheel-next{right:5px;top:calc(50% - 13px);width:42px;height:26px}
+.ipod-wheel .wheel-stop{left:calc(50% - 15px);bottom:8px;width:30px}
+.ipod-wheel .wheel-center{left:calc(50% - 27px);top:calc(50% - 27px);width:54px;height:54px;border-radius:50%;background:linear-gradient(#d8dbd7,#b9beb9);border:1px solid #a0a69f;box-shadow:inset 0 1px #fff;font-size:18px;color:#555d56}
+.ipod-hint{text-align:center;margin-top:10px;color:#4e584d;font:7px monospace;letter-spacing:.4px}
+.scrapbook-device{padding:12px;background:#e7d5b7;border:1px solid #c3a77d;border-radius:2px;box-shadow:3px 4px 0 #bba17c;transform:rotate(-.15deg)}
+.scrap-paper{position:relative;background:#f7ebd6;border:1px solid #d6bd96;padding:24px 14px 15px;color:#3d2d20;box-shadow:0 3px 0 #d0b58a;text-align:center}
+.scrap-tape{position:absolute;top:-10px;left:calc(50% - 38px);width:76px;height:23px;background:#c9b5a0;opacity:.85;transform:rotate(-3deg);border-left:1px dashed #a38d75;border-right:1px dashed #a38d75}
+.scrap-tag{position:absolute;top:8px;right:8px;padding:4px 6px;background:#c6533b;color:#fff5e9;font:8px monospace;transform:rotate(5deg)}
+.scrap-kicker{font:8px monospace;letter-spacing:1px;color:#a43f2c;text-transform:uppercase}
+.scrap-photo{display:flex;align-items:center;justify-content:center;margin:13px auto 14px;padding:7px 7px 17px;background:#fffdf7;border:0;box-shadow:0 3px 5px #c7b08c;transform:rotate(2deg);min-width:130px;min-height:145px}
+.scrap-photo img,.photo-placeholder{width:115px;height:115px;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,#d9bba0,#ecd5b8 50%,#8a9b8c);color:#fff9eb;font:34px Georgia,serif}
+.scrap-paper h2{color:#3d2d20;font:italic 500 clamp(24px,4vw,36px)/1.1 Georgia,serif;margin:10px 0}
+.scrap-note{color:#684b32;font:italic 13px/1.6 Georgia,serif;border-top:1px dashed #c3a77d;padding-top:10px;margin:9px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.scrap-bottom{font:8px monospace;color:#8e7150;letter-spacing:1px;margin-top:12px}
+.webcore-device{border:2px solid #ff62c9;border-radius:2px;background:#14142b;color:#fff;box-shadow:5px 5px #69ead3;overflow:hidden}
+.web-browser-bar{background:#dbd5ff;color:#24203f;display:flex;gap:5px;align-items:center;padding:8px 9px;font:9px monospace;border-bottom:2px solid #ff62c9}
+.web-dot{width:8px;height:8px;border-radius:50%;background:#ff62c9;box-shadow:12px 0 #f4d35e,24px 0 #69ead3;margin-right:20px;flex:0 0 8px}
+.web-window-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.web-browser-bar button{width:25px;height:23px;padding:0;background:#bdb4f5;color:#211e40;border:1px solid #8073cf}
+.web-screen{padding:17px 14px 15px;background:radial-gradient(circle at 50% 10%,#34336d 0,#17172e 55%,#101020 100%);position:relative}
+.web-badge{display:inline-block;padding:4px 7px;background:#69ead3;color:#18172e;font:900 8px monospace;letter-spacing:1px;transform:rotate(-2deg)}
+.web-kicker{color:#69ead3;font:8px monospace;letter-spacing:1.3px;margin-top:12px}
+.web-screen h2{color:#ff8cdb;font:700 clamp(24px,3.5vw,36px)/1.1 Arial,sans-serif;text-transform:uppercase;letter-spacing:-1px;text-shadow:3px 3px #5c4bc3;margin:10px 0}
+.web-screen .device-meta{color:#e4d8ff}
+.web-art{display:flex;gap:4px;align-items:center;justify-content:center;height:65px;margin:12px 0;border:1px solid #52448d;background:#1c1c3d;overflow:hidden}
+.equalizer-bar{width:6px;flex:0 0 6px;border-radius:3px 3px 0 0;background:linear-gradient(#ff62c9,#806aff,#69ead3)}
+.webcore-device.is-playing .equalizer-bar{animation:eq 1s ease-in-out infinite alternate}
+.equalizer-bar:nth-child(3n){animation-delay:-.4s}.equalizer-bar:nth-child(3n + 1){animation-delay:-.7s}
+.web-note{color:#d9d0ff;border-top:1px dashed #6357a3;padding-top:10px;margin:9px 0;font:italic 12px/1.5 Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+@keyframes eq{from{transform:scaleY(.25);opacity:.6}to{transform:scaleY(1);opacity:1}}
+.device-status{margin-top:7px;font:8px monospace;letter-spacing:.8px;color:#867a69;text-transform:uppercase}
+.device-status[hidden]{display:none}
+@media(max-width:520px){.player-shell{padding:5px;gap:8px}.cd-layout{grid-template-columns:minmax(100px,.9fr) minmax(0,1.1fr);gap:9px}.cd-copy h2{font-size:21px}.cd-dedication{font-size:11px}.cd-disc{width:100%}.cassette-reel{width:55px;height:55px}.cassette-reel span{inset:14px}.ipod-device{padding:14px}.ipod-wheel{width:145px;height:145px}.player-status-line{padding:8px}.common-controls button,.tracklist-toggle,.haptic-toggle{padding:8px}}
+@media(prefers-reduced-motion:reduce){.cd-disc,.cassette-device.is-playing .cassette-reel,.webcore-device.is-playing .equalizer-bar{animation:none!important}}
+</style>
+</head><body>
+<div class="player-shell @@PLAYER_THEME@@">
+  @@DEVICE_MARKUP@@
+  <div class="player-status-line"><span id="nowPlayingLabel"></span><span id="playerStatus">Preparing player…</span><span id="trackCounter"></span></div>
+  <div class="common-controls">
+    <button data-action="toggle-tracklist" class="tracklist-toggle" id="tracklistToggle">TRACKLIST</button>
+    <button data-action="previous" id="prevGlobal">◀ PREV</button>
+    <button data-action="toggle-play" data-play-label id="globalPlay">▶ PLAY</button>
+    <button data-action="next" id="nextGlobal">NEXT ▶</button>
+    <button data-action="toggle-haptics" class="haptic-toggle" id="hapticToggle">HAPTICS ON</button>
+  </div>
+  <div class="tracklist-panel" id="tracklistPanel" hidden>@@TRACKLIST_MARKUP@@</div>
+  <div class="player-video"><div id="ytplayer"></div></div>
+  <div class="playback-note" id="playbackNote"></div>
+</div>
+<script>
+const songs = @@TRACKS_JSON@@;
+const labels = @@LABELS_JSON@@;
+const skin = "@@SKIN@@";
+let current = 0;
+let player = null;
+let ready = false;
+let playing = false;
+let hapticsEnabled = true;
+let apiLoadStarted = false;
+
+function haptic() {
+  if (!hapticsEnabled) return;
+  try {
+    if (navigator.vibrate) navigator.vibrate(12);
+  } catch (error) {}
+}
+function setStatus(message) {
+  const status = document.getElementById('playerStatus');
+  if (status) status.textContent = message;
+}
+function refresh() {
+  const track = songs[current];
+  const titleText = track ? track.title : 'Add a track to begin';
+  const trackTitle = document.getElementById('ipodTrackTitle');
+  if (trackTitle) trackTitle.textContent = titleText;
+  document.getElementById('nowPlayingLabel').textContent = labels.nowPlaying;
+  document.getElementById('trackCounter').textContent = songs.length ? String(current + 1).padStart(2,'0') + ' / ' + String(songs.length).padStart(2,'0') : '00 / 00';
+  document.getElementById('playbackNote').textContent = labels.playbackNote;
+  document.querySelectorAll('[data-play-label]').forEach(function(button) {
+    button.textContent = playing ? labels.pause : labels.play;
+  });
+  const ipodIcon = document.querySelector('[data-role="ipod-play-icon"]');
+  if (ipodIcon) ipodIcon.textContent = playing ? 'Ⅱ' : '▶';
+  const device = document.getElementById('devicePanel');
+  if (device) {
+    device.classList.toggle('is-playing', playing);
+  }
+  const ipodStatus = document.getElementById('ipodPlayStatus');
+  if (ipodStatus) ipodStatus.textContent = playing ? 'PLAYING' : (ready ? 'PAUSED' : 'READY');
+  const cassetteStatus = document.getElementById('cassetteStatus');
+  if (cassetteStatus) cassetteStatus.textContent = playing ? 'PLAYING · REELS IN MOTION' : 'PAUSED · TAPE AT REST';
+  const previousDisabled = !ready || songs.length < 2;
+  const nextDisabled = !ready || songs.length < 2;
+  document.querySelectorAll('[data-action="previous"]').forEach(function(button) { button.disabled = previousDisabled; });
+  document.querySelectorAll('[data-action="next"]').forEach(function(button) { button.disabled = nextDisabled; });
+  document.querySelectorAll('[data-action="toggle-play"],[data-action="stop"],[data-action="select-track"]').forEach(function(button) { button.disabled = !ready || !songs.length; });
+  const statusText = !songs.length ? 'Add YouTube tracks above' : (!ready ? 'Loading YouTube player…' : (playing ? 'PLAYING' : 'READY'));
+  if (!document.getElementById('playerStatus').textContent.startsWith('YouTube error')) setStatus(statusText);
+  const trackButtons = document.querySelectorAll('.track-pick');
+  trackButtons.forEach(function(button, index) { button.setAttribute('aria-current', index === current ? 'true' : 'false'); });
+  const caseButton = document.getElementById('caseButton');
+  if (caseButton) caseButton.textContent = document.getElementById('cdCase').classList.contains('is-open') ? 'CLOSE CASE' : 'OPEN CASE';
+  const caseNote = document.getElementById('caseOpenNote');
+  if (caseNote) caseNote.hidden = !document.getElementById('cdCase').classList.contains('is-open');
+  const hapticButton = document.getElementById('hapticToggle');
+  if (hapticButton) hapticButton.textContent = hapticsEnabled ? 'HAPTICS ON' : 'HAPTICS OFF';
+}
+function selectTrack(index, autoPlay) {
+  if (!ready || !player || !songs.length) {
+    setStatus('YouTube player is still loading');
+    return;
+  }
+  current = (index + songs.length) % songs.length;
+  player.loadVideoById(songs[current].id);
+  playing = true;
+  refresh();
+  if (autoPlay !== false) setStatus('Loading ' + songs[current].title);
+}
+function togglePlay() {
+  if (!ready || !player || !songs.length) {
+    setStatus(songs.length ? 'YouTube player is still loading' : 'Add at least one track first');
+    return;
+  }
+  if (playing) player.pauseVideo();
+  else player.playVideo();
+}
+function stopPlayback() {
+  if (!ready || !player || !songs.length) {
+    setStatus('Player is not ready yet');
+    return;
+  }
+  player.pauseVideo();
+  player.seekTo(0, true);
+  playing = false;
+  refresh();
+  setStatus('STOPPED · AT THE START OF THE TRACK');
+}
+function toggleTracklist() {
+  const panel = document.getElementById('tracklistPanel');
+  const hidden = panel.hasAttribute('hidden');
+  if (hidden) panel.removeAttribute('hidden');
+  else panel.setAttribute('hidden', '');
+  document.getElementById('tracklistToggle').textContent = hidden ? 'HIDE TRACKLIST' : 'TRACKLIST';
+  setStatus(hidden ? 'Choose a track from the list' : 'Tracklist closed');
+}
+function doAction(action, button) {
+  haptic();
+  if (action === 'toggle-play') togglePlay();
+  else if (action === 'previous') selectTrack(current - 1, true);
+  else if (action === 'next') selectTrack(current + 1, true);
+  else if (action === 'stop') stopPlayback();
+  else if (action === 'select-track') selectTrack(Number(button.getAttribute('data-index')) || 0, true);
+  else if (action === 'toggle-tracklist') toggleTracklist();
+  else if (action === 'toggle-haptics') {
+    const wasEnabled = hapticsEnabled;
+    if (wasEnabled && navigator.vibrate) { try { navigator.vibrate(8); } catch (error) {} }
+    hapticsEnabled = !hapticsEnabled;
+    refresh();
+    setStatus(hapticsEnabled ? 'Haptic feedback enabled where supported' : 'Haptic feedback turned off');
+  }
+  else if (action === 'eject') {
+    const caseElement = document.getElementById('cdCase');
+    caseElement.classList.toggle('is-open');
+    refresh();
+    setStatus(caseElement.classList.contains('is-open') ? 'CASE OPEN' : 'CASE CLOSED');
+  }
+}
+document.addEventListener('click', function(event) {
+  const button = event.target.closest('button[data-action]');
+  if (!button || button.disabled) return;
+  doAction(button.getAttribute('data-action'), button);
+});
+document.addEventListener('keydown', function(event) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  const target = event.target;
+  if (target && target.matches && target.matches('button[data-action]')) {
+    event.preventDefault();
+    target.click();
+  }
+});
+function createPlayer() {
+  if (!window.YT || !window.YT.Player || player || !songs.length) return;
+  apiLoadStarted = true;
+  player = new YT.Player('ytplayer', {
+    width:'100%', height:'300', videoId:songs[current].id,
+    playerVars:{playsinline:1, rel:0, modestbranding:1, controls:1},
+    events:{
+      onReady:function() {
+        ready = true;
+        refresh();
+        setStatus('READY · ' + songs[current].title);
+      },
+      onStateChange:function(event) {
+        playing = event.data === YT.PlayerState.PLAYING;
+        refresh();
+        if (event.data === YT.PlayerState.PLAYING) setStatus('PLAYING · ' + songs[current].title);
+        else if (event.data === YT.PlayerState.PAUSED) setStatus('PAUSED · ' + songs[current].title);
+        else if (event.data === YT.PlayerState.ENDED) {
+          if (current < songs.length - 1) selectTrack(current + 1, true);
+          else {
+            playing = false;
+            refresh();
+            setStatus('MIXTAPE FINISHED');
+          }
+        }
+      },
+      onError:function() {
+        ready = false;
+        setStatus('YouTube error · try another video');
+        refresh();
+      }
+    }
+  });
+}
+if (songs.length) {
+  const script = document.createElement('script');
+  script.src = 'https://www.youtube.com/iframe_api';
+  script.onload = function() { createPlayer(); };
+  document.head.appendChild(script);
+  window.onYouTubeIframeAPIReady = createPlayer;
+} else {
+  document.getElementById('ytplayer').innerHTML = '<div style="padding:24px;color:#746b5f;text-align:center;font:12px Arial">Add a valid YouTube URL to enable playback.</div>';
+  setStatus('Add YouTube tracks above');
+  refresh();
+}
+refresh();
+</script></body></html>""";
+
+    component_html = (
+        template.replace("@@PLAYER_THEME@@", theme_class)
+        .replace("@@DEVICE_MARKUP@@", device_markup)
+        .replace("@@TRACKS_JSON@@", tracks_json)
+        .replace("@@LABELS_JSON@@", labels_json)
+        .replace("@@TRACKLIST_MARKUP@@", tracklist_markup)
+        .replace("@@SKIN@@", skin.replace('"', ''))
+    )
+    components.html(component_html, height=970, scrolling=True)
+
 def make_mix(title, sender, recipient, note, cover, skin, tracks, copy):
     return {
         "title": title[:100], "sender": sender[:80], "recipient": recipient[:80],
@@ -582,8 +1035,7 @@ if incoming:
         f'<p>{html.escape(str(copy["recipient_description"]))}</p></div>',
         unsafe_allow_html=True,
     )
-    render_player_card({**incoming, "copy": copy})
-    render_track_player(incoming.get("tracks", []), copy, "recipient", incoming.get("skin", "CD player"))
+    render_interactive_player({**incoming, "copy": copy}, copy, "recipient")
     footer_text = str(copy.get("footer_text", DEFAULT_COPY["footer_text"])).strip()
     if footer_text:
         st.markdown('<div class="footer">' + html.escape(footer_text) + '</div>', unsafe_allow_html=True)
@@ -686,13 +1138,9 @@ else:
         with st.container(border=True):
             st.markdown(f'<div class="section-title">03 / {html.escape(str(copy_values["preview_heading"]))}</div>', unsafe_allow_html=True)
             mix = make_mix(title, sender, recipient, note, cover, skin, tracks, copy_values)
-            render_player_card(mix)
             valid_tracks = mix["tracks"]
             st.caption(f"{len(valid_tracks)} valid YouTube track(s)")
-            if valid_tracks:
-                render_track_player(valid_tracks, copy_values, "preview", skin)
-            else:
-                st.info("Add at least one valid YouTube link to preview playback controls.")
+            render_interactive_player(mix, copy_values, "preview")
 
             current_payload = encode_mix(mix) if valid_tracks else ""
             if st.button(str(copy_values.get("burn_button_label", DEFAULT_COPY["burn_button_label"])), use_container_width=True, type="primary"):
