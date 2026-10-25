@@ -220,8 +220,8 @@ DEFAULT_COPY = {
     "dedication_heading": "The dedication",
     "tracklist_heading": "The tracklist",
     "preview_heading": "A little preview",
-    "footer_text": "Made with feeling · No database required · Music plays through YouTube",
-    "brand_tagline": "A little music, sent with feeling",
+    "footer_text": "",
+    "brand_tagline": "PERSONAL MIXTAPE STUDIO",
     "burn_button_label": "Burn this mixtape ↗",
     "share_button_label": "Open / share mixtape",
     "make_own_label": "Make your own mixtape",
@@ -527,7 +527,9 @@ if incoming:
     )
     render_player_card({**incoming, "copy": copy})
     render_track_player(incoming.get("tracks", []), copy, "recipient", incoming.get("skin", "CD player"))
-    st.markdown('<div class="footer">' + html.escape(str(copy.get("footer_text", DEFAULT_COPY["footer_text"]))) + '</div>', unsafe_allow_html=True)
+    footer_text = str(copy.get("footer_text", DEFAULT_COPY["footer_text"])).strip()
+    if footer_text:
+        st.markdown('<div class="footer">' + html.escape(footer_text) + '</div>', unsafe_allow_html=True)
     if st.button(str(copy.get("make_own_label", DEFAULT_COPY["make_own_label"]))):
         st.query_params.clear()
         st.rerun()
@@ -657,4 +659,5 @@ else:
                     st.info("Deploy the app publicly to generate a shareable link.")
                 st.caption("The mixtape details are encoded in the URL, so no database is needed. Very long mixtapes can create long links.")
 
-st.markdown('<div class="footer">' + html.escape(str(copy_values.get("footer_text", DEFAULT_COPY["footer_text"]))) + '</div>' if not incoming else "", unsafe_allow_html=True)
+if not incoming and str(copy_values.get("footer_text", DEFAULT_COPY["footer_text"])).strip():
+    st.markdown('<div class="footer">' + html.escape(str(copy_values["footer_text"])) + '</div>', unsafe_allow_html=True)
