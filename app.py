@@ -188,6 +188,85 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
 @keyframes led-blink { from { opacity:.3; } to { opacity:1; } }
 @media(prefers-reduced-motion:reduce) { .cd-disc,.web-art .bar,.burn-disc,.burn-laser,.burn-led,.burn-progress span { animation:none !important; } }
 
+
+/* Design-system pass: responsive, readable controls; the physical players carry the personality. */
+:root {
+  color-scheme: light dark;
+  --paper:#EEF1EE; --ink:#18211F; --muted:#52605A; --line:#CDD6D0;
+  --accent:#205F55; --panel:#FFFFFF; --surface:#FFFFFF; --surface-soft:#F7FAF8;
+  --accent-soft:#E2EEEA; --focus:#174F46;
+}
+.stApp, [data-testid="stAppViewContainer"] { background:var(--paper) !important; color:var(--ink); }
+[data-testid="stMainBlockContainer"], .block-container { max-width:1120px; padding-top:clamp(16px,2.5vw,30px); padding-bottom:clamp(32px,5vw,64px); }
+.brand { border-bottom:1px solid var(--line); padding-bottom:14px; }
+.brand b { font:700 23px/1.15 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:-.045em; color:var(--ink); }
+.brand .dot { color:var(--accent); }
+.brand .tag { font:600 11px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.09em; color:var(--muted); }
+.hero { padding:clamp(24px,4vw,42px) 0 clamp(20px,3vw,32px); }
+.hero h1 { max-width:16ch; margin:10px 0 14px; font:650 clamp(2.5rem,6vw,4.4rem)/1.04 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:-.055em; color:var(--ink); overflow-wrap:anywhere; }
+.hero h1 em { color:var(--accent); font-style:normal; font-weight:650; }
+.hero p { max-width:650px; color:var(--muted); font:400 16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:clamp(14px,2.2vw,22px); margin-bottom:16px; box-shadow:0 1px 2px rgba(24,33,31,.035); }
+.section-title { color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:11px; margin-bottom:15px; font:650 12px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+.stMarkdown, .stMarkdown p, [data-testid="stCaptionContainer"], .stCaption { color:var(--ink); }
+.stMarkdown p { line-height:1.55; }
+label, .stTextInput label, .stTextArea label, .stSelectbox label, .stNumberInput label, .stSlider label, .stRadio label, .stCheckbox label, [data-testid="stWidgetLabel"] p {
+  color:var(--ink) !important; font:600 13px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  letter-spacing:0 !important; text-transform:none !important;
+}
+div[data-testid="stTextInput"] input, div[data-testid="stTextArea"] textarea, div[data-testid="stNumberInput"] input {
+  background:var(--surface) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important;
+  border:1px solid var(--line) !important; border-radius:7px !important; font:400 15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  min-height:44px; box-shadow:none !important;
+}
+div[data-testid="stTextArea"] textarea { min-height:104px; }
+div[data-testid="stTextInput"] input::placeholder, div[data-testid="stTextArea"] textarea::placeholder { color:var(--muted) !important; -webkit-text-fill-color:var(--muted) !important; opacity:1 !important; }
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div { background:var(--surface) !important; color:var(--ink) !important; border-color:var(--line) !important; border-radius:7px !important; min-height:44px; }
+div[data-testid="stSelectbox"] div[data-baseweb="select"] span { color:var(--ink) !important; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important; font-size:14px !important; }
+div[data-testid="stNumberInput"] button { background:var(--surface-soft) !important; color:var(--ink) !important; border-color:var(--line) !important; min-width:40px; min-height:44px; }
+.stButton > button, .stLinkButton a {
+  min-height:44px; padding:10px 15px; border-radius:8px; background:var(--surface); color:var(--ink);
+  border:1px solid var(--line); font:600 14px/1.3 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:0; box-shadow:none; transition:background-color .12s ease,border-color .12s ease,transform .08s ease;
+}
+.stButton > button:hover, .stLinkButton a:hover { background:var(--accent-soft); color:var(--ink); border-color:var(--accent); }
+.stButton > button[kind="primary"], .stButton > button[data-testid="stBaseButton-primary"] { background:var(--accent) !important; color:#FFFFFF !important; border-color:var(--accent) !important; }
+.stButton > button:focus-visible, .stLinkButton a:focus-visible, input:focus-visible, textarea:focus-visible, [role="combobox"]:focus-visible { outline:3px solid var(--focus) !important; outline-offset:2px !important; }
+.stCaption, [data-testid="stCaptionContainer"] { color:var(--muted) !important; font:400 12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important; }
+div[data-testid="stAlert"] { border-radius:8px; }
+div[data-testid="stExpander"] { background:var(--surface); border:1px solid var(--line); border-radius:9px; }
+div[data-testid="stExpander"] summary { min-height:44px; }
+.track-row { border-color:var(--line); color:var(--ink); font:400 14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; padding:12px 5px; }
+.track-num { color:var(--accent); font:600 12px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace; }
+.footer { border-color:var(--line); color:var(--muted); font:400 12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:0; }
+[data-testid="stHorizontalBlock"] { gap:clamp(12px,2vw,22px); }
+@media (prefers-color-scheme:dark) {
+  :root { --paper:#171C1A; --ink:#F1F4F1; --muted:#B6C0B9; --line:#3B4540; --accent:#87C9B5; --panel:#212825; --surface:#212825; --surface-soft:#272F2B; --accent-soft:#293D36; --focus:#A1D9C8; }
+  .stApp, [data-testid="stAppViewContainer"] { background:var(--paper) !important; color:var(--ink); }
+  .stMarkdown, .stMarkdown p, [data-testid="stCaptionContainer"], .stCaption, label, [data-testid="stWidgetLabel"] p { color:var(--ink); }
+  .brand .tag, .hero p, .stCaption, [data-testid="stCaptionContainer"], .footer { color:var(--muted) !important; }
+  div[data-testid="stTextInput"] input, div[data-testid="stTextArea"] textarea, div[data-testid="stNumberInput"] input, div[data-testid="stSelectbox"] div[data-baseweb="select"] > div { background:var(--surface) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; border-color:var(--line) !important; }
+  div[data-testid="stTextInput"] input::placeholder, div[data-testid="stTextArea"] textarea::placeholder { color:var(--muted) !important; -webkit-text-fill-color:var(--muted) !important; }
+  div[data-testid="stSelectbox"] div[data-baseweb="select"] span { color:var(--ink) !important; }
+  .panel, div[data-testid="stExpander"] { background:var(--surface); border-color:var(--line); }
+  .stButton > button, .stLinkButton a { background:var(--surface); color:var(--ink); border-color:var(--line); }
+  .stButton > button:hover, .stLinkButton a:hover { background:var(--accent-soft); color:var(--ink); }
+  .stButton > button[kind="primary"], .stButton > button[data-testid="stBaseButton-primary"] { background:var(--accent) !important; color:#171C1A !important; border-color:var(--accent) !important; }
+}
+@media (max-width:700px) {
+  .block-container, [data-testid="stMainBlockContainer"] { padding:16px 14px 32px; }
+  .brand b { font-size:21px; }
+  .brand .tag { max-width:155px; font-size:10px; line-height:1.4; }
+  .hero h1 { font-size:clamp(2.2rem,10vw,3.4rem); letter-spacing:-.045em; }
+  .hero p { font-size:15px; }
+  .panel { padding:14px; border-radius:9px; }
+  label, .stTextInput label, .stTextArea label, .stSelectbox label, .stNumberInput label, [data-testid="stWidgetLabel"] p { font-size:13px !important; }
+  .stButton > button, .stLinkButton a { min-height:44px; width:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.001ms !important; }
+  .stButton > button:active, .stLinkButton a:active { transform:none !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
