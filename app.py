@@ -67,6 +67,85 @@ div[data-testid="stExpander"] { background:#faf7f0; border:1px solid #d7cfc1; bo
   .panel { padding:14px; }
   .player-card { padding:24px 12px; }
 }
+
+/* Each player skin is a separate design, not a recolour of the same card. */
+.player-card.skin-cd { background:#211f1c; border:1px solid #4b4640; border-radius:5px; padding:20px 18px 22px; box-shadow:0 5px 0 #d7cfc1; }
+.cd-hardware { background:linear-gradient(145deg,#e1ddd4,#b9b2a6); border:1px solid #f3eee4; border-radius:4px; padding:10px; }
+.cd-display { display:flex; justify-content:space-between; gap:10px; color:#39352f; font:9px 'DM Mono',monospace; letter-spacing:1.1px; padding:2px 2px 9px; }
+.cd-window { background:#171614; border:1px solid #5e594f; border-radius:3px; min-height:228px; padding:18px 12px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.cd-window .kicker { margin-bottom:8px; }
+.cd-window h2 { margin:4px 0 9px; }
+.cd-window .to-line { color:#d4cbbd; font-size:9px; }
+.cd-window .note { margin-top:14px; font-size:13px; }
+.cd-disc { width:126px; height:126px; border:1px solid #777065; border-radius:50%; margin:16px auto; display:flex; align-items:center; justify-content:center; background:repeating-radial-gradient(circle at center,#4c4943 0 3px,#282623 4px 7px,#555047 8px 9px,#272522 10px 13px); animation:cd-spin 7s linear infinite; box-shadow:0 0 0 4px #36332e,0 0 0 5px #777065; }
+.cd-disc-label { width:54px; height:54px; border-radius:50%; background:#c6533b; border:2px solid #e18c74; color:#fff5e9; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; font:8px/1.2 'DM Mono',monospace; padding:4px; }
+.cd-disc-label img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+@keyframes cd-spin { to { transform:rotate(360deg); } }
+
+.player-card.skin-ipod { background:linear-gradient(135deg,#e9eae7,#c2c7c2); border:1px solid #a6aba5; border-radius:23px; padding:17px 18px 19px; box-shadow:inset 0 0 0 5px #daddd8, inset 0 0 0 6px #a6aba5, 0 8px 15px #b7aea0; color:#202720; }
+.ipod-logo { font:700 11px 'DM Sans',sans-serif; letter-spacing:1.6px; color:#555d56; text-align:center; margin-bottom:12px; }
+.ipod-screen { border:3px solid #788178; background:linear-gradient(#e4e9df,#c8d3c5); border-radius:3px; min-height:150px; padding:10px; text-align:left; box-shadow:inset 0 0 10px #a7b19f; }
+.ipod-screen-top { display:flex; justify-content:space-between; border-bottom:1px solid #a2ad9c; padding-bottom:6px; color:#4c584b; font:9px 'DM Mono',monospace; }
+.ipod-screen-main { display:flex; align-items:center; gap:10px; padding-top:9px; }
+.ipod-cover { width:62px; height:62px; flex:0 0 62px; object-fit:cover; border:1px solid #8d9988; }
+.ipod-cover.blank { display:grid; place-items:center; background:repeating-linear-gradient(135deg,#aab9a4 0 7px,#d2ddcc 7px 14px); font:10px 'DM Mono',monospace; color:#3d4a3b; }
+.ipod-track { min-width:0; font:600 13px/1.25 'DM Sans',sans-serif; color:#263126; overflow-wrap:anywhere; }
+.ipod-track small { display:block; font:10px/1.5 'DM Sans',sans-serif; color:#546151; margin-top:4px; }
+.ipod-note { font:italic 11px/1.35 'DM Sans',sans-serif; color:#465343; overflow-wrap:anywhere; margin-top:7px; }
+.ipod-wheel { width:142px; height:142px; border-radius:50%; margin:18px auto 0; position:relative; background:linear-gradient(145deg,#fbfcfa,#d6d9d5); border:1px solid #9ea39d; box-shadow:inset 0 1px 3px #fff,0 2px 3px #a9aca6; }
+.ipod-wheel .wheel-label { position:absolute; color:#727972; font:8px 'DM Sans',sans-serif; letter-spacing:.5px; }
+.ipod-wheel .menu { top:16px; left:0; right:0; text-align:center; font-weight:700; }
+.ipod-wheel .back { left:17px; top:66px; }.ipod-wheel .next { right:15px; top:66px; }
+.ipod-wheel .prev { left:0; right:0; top:40px; text-align:center; transform:rotate(90deg); }
+.ipod-wheel .center { position:absolute; width:51px; height:51px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:linear-gradient(#d8dbd7,#b9beb9); border:1px solid #a0a69f; display:grid; place-items:center; color:#555d56; font-size:15px; }
+
+.player-card.skin-scrapbook { background:#e7d5b7; border:1px solid #c3a77d; border-radius:2px; padding:22px 17px 20px; color:#3d2d20; box-shadow:3px 4px 0 #bba17c; transform:rotate(-.4deg); }
+.scrap-paper { position:relative; background:#f7ebd6; border:1px solid #d6bd96; padding:24px 15px 20px; color:#3d2d20; box-shadow:0 3px 0 #d0b58a; }
+.scrap-tape { position:absolute; top:-10px; left:calc(50% - 38px); width:76px; height:23px; background:#c9b5a0; opacity:.85; transform:rotate(-3deg); border-left:1px dashed #a38d75; border-right:1px dashed #a38d75; }
+.scrap-tag { position:absolute; top:8px; right:8px; padding:4px 6px; background:#c6533b; color:#fff5e9; font:8px 'DM Mono',monospace; transform:rotate(5deg); }
+.scrap-photo { display:inline-block; background:#fffdf7; padding:7px 7px 20px; transform:rotate(2deg); box-shadow:0 3px 5px #c7b08c; margin:13px auto 17px; }
+.scrap-photo img { display:block; width:114px; height:114px; object-fit:cover; }
+.scrap-photo .photo-placeholder { width:114px; height:114px; display:grid; place-items:center; background:linear-gradient(135deg,#d9bba0,#ecd5b8 50%,#8a9b8c); color:#fff9eb; font:34px 'Playfair Display',serif; }
+.scrap-paper h2 { color:#3d2d20 !important; font:italic 500 clamp(26px,4vw,40px)/1.1 'Playfair Display',serif; }
+.scrap-paper .kicker { color:#a43f2c; }
+.scrap-paper .to-line { color:#71543b; font-size:10px; }
+.scrap-paper .note { color:#684b32; font:italic 15px/1.7 'Playfair Display',serif; border-top:1px dashed #c3a77d; padding-top:12px; margin-top:11px; }
+.scrap-hand { font:10px 'DM Mono',monospace; color:#8e7150; letter-spacing:1px; margin-top:12px; }
+
+.player-card.skin-webcore { border:2px solid #ff62c9; border-radius:2px; padding:0; overflow:hidden; background:#14142b; color:#fff; box-shadow:6px 6px 0 #69ead3; text-align:left; }
+.web-browser-bar { background:#dbd5ff; color:#24203f; display:flex; gap:5px; align-items:center; padding:8px 9px; font:9px 'DM Mono',monospace; border-bottom:2px solid #ff62c9; }
+.web-dot { width:8px; height:8px; border-radius:50%; background:#ff62c9; box-shadow:12px 0 #f4d35e,24px 0 #69ead3; margin-right:20px; flex:0 0 8px; }
+.web-window-label { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.web-screen { padding:20px 15px 18px; background:radial-gradient(circle at 50% 10%,#34336d 0,#17172e 55%,#101020 100%); position:relative; }
+.web-screen:before { content:""; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg,transparent 0 4px,rgba(255,255,255,.035) 5px 6px); }
+.web-badge { display:inline-block; padding:4px 7px; background:#69ead3; color:#18172e; font:900 8px 'DM Mono',monospace; letter-spacing:1px; transform:rotate(-2deg); }
+.web-screen h2 { color:#ff8cdb !important; font:700 clamp(24px,3.5vw,38px)/1.1 'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:-1px; text-shadow:3px 3px #5c4bc3; margin:13px 0 8px; }
+.web-screen .kicker { color:#69ead3; font-size:9px; }.web-screen .to-line { color:#e4d8ff; font-size:9px; }
+.web-art { display:flex; gap:3px; align-items:center; justify-content:center; height:92px; margin:12px 0; border:1px solid #52448d; background:#1c1c3d; overflow:hidden; }
+.web-art .bar { width:7px; border-radius:3px 3px 0 0; background:linear-gradient(#ff62c9,#806aff,#69ead3); animation:eq 1s ease-in-out infinite alternate; }
+.web-art .bar:nth-child(3n) { animation-delay:-.4s; }.web-art .bar:nth-child(3n + 1) { animation-delay:-.7s; }
+@keyframes eq { from { transform:scaleY(.25); opacity:.6; } to { transform:scaleY(1); opacity:1; } }
+.web-screen .note { color:#d9d0ff; border-top:1px dashed #6357a3; padding-top:12px; margin-top:10px; font:italic 13px/1.5 'DM Sans',sans-serif; }
+.skin-ipod .player-controls, .skin-cd .player-controls, .skin-scrapbook .player-controls, .skin-webcore .player-controls { margin-top:12px; }
+.burn-scene { border:1px solid #c8c0b2; border-radius:6px; padding:15px 16px 13px; margin:12px 0 16px; background:#f9f4ea; text-align:center; overflow:hidden; }
+.burn-topline { display:flex; justify-content:space-between; gap:10px; font:10px 'DM Mono',monospace; letter-spacing:1px; color:#746b5f; text-transform:uppercase; }
+.burn-drive { width:100%; max-width:340px; height:116px; position:relative; margin:13px auto 9px; background:linear-gradient(#4e4941,#292722); border:1px solid #625b50; border-radius:7px; box-shadow:0 5px 0 #d1c7b7; overflow:hidden; }
+.burn-slot { position:absolute; left:12%; right:12%; bottom:18px; height:13px; border-radius:2px; background:#111; box-shadow:inset 0 2px 4px #000; }
+.burn-led { position:absolute; top:14px; right:16px; width:7px; height:7px; border-radius:50%; background:#d94b36; box-shadow:0 0 8px #f45a40; animation:led-blink .7s infinite alternate; }
+.burn-disc { position:absolute; width:82px; height:82px; left:calc(50% - 41px); top:11px; border-radius:50%; border:1px solid #9e968a; background:repeating-radial-gradient(circle,#7b766d 0 2px,#bdb6aa 3px 5px,#5c5851 6px 7px,#c7c0b4 8px 11px); animation:burn-spin 1.8s linear infinite, burn-glow 1.5s ease-in-out infinite alternate; }
+.burn-disc:after { content:""; position:absolute; width:25px; height:25px; left:28px; top:28px; border-radius:50%; background:#c6533b; border:2px solid #e0a28e; }
+.burn-laser { position:absolute; left:15%; right:15%; top:52px; height:2px; background:#fa5b45; box-shadow:0 0 8px 2px #f6533b; animation:laser-sweep 1.1s ease-in-out infinite alternate; }
+.burn-progress { height:5px; background:#ded5c7; margin:11px 0 9px; border-radius:5px; overflow:hidden; }
+.burn-progress span { display:block; height:100%; width:100%; background:linear-gradient(90deg,#c6533b,#f1a37c); transform-origin:left; animation:burn-progress 4.2s cubic-bezier(.22,.65,.28,1) both; }
+.burn-caption { color:#29251f; font:500 15px 'Playfair Display',serif; }
+.burn-sub { color:#746b5f; font:10px 'DM Mono',monospace; margin-top:4px; }
+@keyframes burn-spin { to { transform:rotate(360deg); } }
+@keyframes burn-glow { from { box-shadow:0 0 3px rgba(246,83,59,.1); } to { box-shadow:0 0 16px rgba(246,83,59,.55); } }
+@keyframes laser-sweep { from { transform:translateY(-31px); opacity:.5; } to { transform:translateY(31px); opacity:1; } }
+@keyframes burn-progress { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+@keyframes led-blink { from { opacity:.3; } to { opacity:1; } }
+@media(prefers-reduced-motion:reduce) { .cd-disc,.web-art .bar,.burn-disc,.burn-laser,.burn-led,.burn-progress span { animation:none !important; } }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -127,6 +206,8 @@ DEFAULT_COPY = {
     "pause_button_label": "Ⅱ PAUSE",
     "next_button_label": "NEXT ▶",
     "playback_note": "Playback is provided by YouTube.",
+    "burning_text": "Burning your mixtape…",
+    "burn_complete_text": "Writing the songs onto a little piece of forever.",
 }
 
 
@@ -158,7 +239,7 @@ def render_hero(copy, recipient=False):
 
 def render_player_card(mix):
     copy = mix.get("copy", {})
-    skin = {"CD player": "", "iPod classic": "ipod", "Scrapbook": "scrapbook", "Webcore": "webcore"}.get(mix.get("skin", "CD player"), "")
+    skin = mix.get("skin", "CD player")
     title = html.escape(str(mix.get("title", "a little mixtape for you")))
     sender = html.escape(str(mix.get("sender", "")))
     recipient = html.escape(str(mix.get("recipient", "")))
@@ -167,16 +248,93 @@ def render_player_card(mix):
     hint = html.escape(str(copy.get("player_hint", DEFAULT_COPY["player_hint"])))
     side = html.escape(str(copy.get("side_label", DEFAULT_COPY["side_label"])))
     cover = str(mix.get("cover", "")).strip()
-    if cover.startswith(("https://", "http://")):
-        art = f'<img class="cover" src="{html.escape(cover, quote=True)}" alt="Mixtape cover">'
-    else:
-        art = f'<div class="disc"><div class="disc-label">{side}</div></div>'
     people = " · ".join(v for v in ([f"From {sender}" if sender else "", f"For {recipient}" if recipient else ""]) if v)
-    st.markdown(
-        f'<div class="player-card {skin}"><div class="kicker">{kicker}</div><h2>{title}</h2>'
-        f'<div class="to-line">{people or hint}</div>{art}<p class="note">{note}</p></div>',
-        unsafe_allow_html=True,
-    )
+    people_html = html.escape(people or hint)
+    cover_url = html.escape(cover, quote=True) if cover.startswith(("https://", "http://")) else ""
+    if skin == "CD player":
+        if cover_url:
+            disc = f'<div class="cd-disc"><div class="cd-disc-label"><img src="{cover_url}" alt="Cover"></div></div>'
+        else:
+            disc = f'<div class="cd-disc"><div class="cd-disc-label">{side}</div></div>'
+        markup = (
+            f'<div class="player-card skin-cd"><div class="cd-hardware">'
+            f'<div class="cd-display"><span>COMPACT DISC · DIGITAL MIX</span><span>STEREO</span></div>'
+            f'<div class="cd-window"><div class="kicker">{kicker}</div><h2>{title}</h2>'
+            f'<div class="to-line">{people_html}</div>{disc}<p class="note">{note}</p></div></div></div>'
+        )
+    elif skin == "iPod classic":
+        if cover_url:
+            art = f'<img class="ipod-cover" src="{cover_url}" alt="Cover">'
+        else:
+            art = '<div class="ipod-cover blank">MIX<br>FM</div>'
+        markup = (
+            f'<div class="player-card skin-ipod"><div class="ipod-logo">iPod</div>'
+            f'<div class="ipod-screen"><div class="ipod-screen-top"><span>♫ MUSIC</span><span>100% ▰</span></div>'
+            f'<div class="ipod-screen-main">{art}<div class="ipod-track">{title}'
+            f'<small>{people_html}</small></div></div><div class="ipod-note">{note}</div></div>'
+            f'<div class="ipod-wheel"><span class="wheel-label menu">MENU</span><span class="wheel-label prev">◀</span>'
+            f'<span class="wheel-label back">◀◀</span><span class="wheel-label next">▶▶</span>'
+            f'<span class="wheel-label" style="right:19px;bottom:14px">▶</span><div class="center">▶</div></div></div>'
+        )
+    elif skin == "Scrapbook":
+        if cover_url:
+            photo = f'<img src="{cover_url}" alt="Cover">'
+        else:
+            photo = '<div class="photo-placeholder">♫</div>'
+        markup = (
+            f'<div class="player-card skin-scrapbook"><div class="scrap-paper"><div class="scrap-tape"></div>'
+            f'<div class="scrap-tag">HANDMADE MIX</div><div class="kicker">{kicker}</div>'
+            f'<div class="scrap-photo">{photo}</div><h2>{title}</h2><div class="to-line">{people_html}</div>'
+            f'<p class="note">{note}</p><div class="scrap-hand">SIDE A · MADE FOR YOU</div></div></div>'
+        )
+    else:
+        bars = "".join(f'<span class="bar" style="height:{height}px"></span>' for height in [22, 40, 58, 32, 70, 45, 84, 35, 62, 28, 76, 48, 65, 31, 53, 24, 43, 69, 33, 55])
+        if cover_url:
+            web_art = f'<img src="{cover_url}" alt="Cover" style="width:78px;height:78px;object-fit:cover;border:2px solid #ff62c9">'
+        else:
+            web_art = bars
+        markup = (
+            f'<div class="player-card skin-webcore"><div class="web-browser-bar"><span class="web-dot"></span>'
+            f'<span class="web-window-label">MIXTAPE.EXE / PLAYER_01</span><span style="margin-left:auto">[_] [X]</span></div>'
+            f'<div class="web-screen"><div class="web-badge">NOW LOADING: FEELINGS</div>'
+            f'<div class="kicker">{kicker}</div><h2>{title}</h2><div class="to-line">{people_html}</div>'
+            f'<div class="web-art">{web_art}</div><p class="note">{note}</p></div></div>'
+        )
+    st.markdown(markup, unsafe_allow_html=True)
+
+
+def render_burn_animation(copy):
+    headline = html.escape(str(copy.get("burning_text", DEFAULT_COPY.get("burning_text", "Burning your mixtape…"))))
+    subline = html.escape(str(copy.get("burn_complete_text", DEFAULT_COPY.get("burn_complete_text", "Writing the songs onto a little piece of forever."))))
+    animation = f"""
+    <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    *{{box-sizing:border-box}}body{{margin:0;background:transparent;font-family:Arial,sans-serif}}
+    .scene{{background:#f9f4ea;border:1px solid #c8c0b2;border-radius:6px;padding:13px 16px 12px;text-align:center;overflow:hidden}}
+    .top{{display:flex;justify-content:space-between;gap:8px;font:9px monospace;letter-spacing:1px;color:#746b5f;text-transform:uppercase}}
+    .drive{{width:100%;max-width:340px;height:116px;position:relative;margin:12px auto 9px;background:linear-gradient(#4e4941,#292722);border:1px solid #625b50;border-radius:7px;box-shadow:0 5px 0 #d1c7b7;overflow:hidden}}
+    .slot{{position:absolute;left:12%;right:12%;bottom:18px;height:13px;border-radius:2px;background:#111;box-shadow:inset 0 2px 4px #000}}
+    .led{{position:absolute;top:14px;right:16px;width:7px;height:7px;border-radius:50%;background:#d94b36;box-shadow:0 0 8px #f45a40;animation:blink .7s infinite alternate}}
+    .disc{{position:absolute;width:82px;height:82px;left:calc(50% - 41px);top:11px;border-radius:50%;border:1px solid #9e968a;background:repeating-radial-gradient(circle,#7b766d 0 2px,#bdb6aa 3px 5px,#5c5851 6px 7px,#c7c0b4 8px 11px);animation:spin 1.6s linear infinite,glow 1.5s ease-in-out infinite alternate}}
+    .disc:after{{content:"";position:absolute;width:25px;height:25px;left:28px;top:28px;border-radius:50%;background:#c6533b;border:2px solid #e0a28e}}
+    .laser{{position:absolute;left:15%;right:15%;top:52px;height:2px;background:#fa5b45;box-shadow:0 0 8px 2px #f6533b;animation:laser 1.1s ease-in-out infinite alternate}}
+    .progress{{height:5px;background:#ded5c7;margin:11px 0 9px;border-radius:5px;overflow:hidden}}
+    .progress span{{display:block;height:100%;background:linear-gradient(90deg,#c6533b,#f1a37c);transform-origin:left;animation:progress 4.2s cubic-bezier(.22,.65,.28,1) both}}
+    .caption{{color:#29251f;font:500 15px Georgia,serif}}.sub{{color:#746b5f;font:10px monospace;margin-top:4px}}
+    .done{{color:#387256;font:10px monospace;letter-spacing:1px;margin-top:6px;opacity:0;animation:done .4s ease-in 3.8s forwards}}
+    @keyframes spin{{to{{transform:rotate(360deg)}}}}@keyframes glow{{from{{box-shadow:0 0 3px #f6533b22}}to{{box-shadow:0 0 16px #f6533b88}}}}
+    @keyframes laser{{from{{transform:translateY(-31px);opacity:.5}}to{{transform:translateY(31px);opacity:1}}}}
+    @keyframes progress{{from{{transform:scaleX(0)}}to{{transform:scaleX(1)}}}}@keyframes blink{{from{{opacity:.3}}to{{opacity:1}}}}
+    @keyframes done{{to{{opacity:1}}}}
+    @media(prefers-reduced-motion:reduce){{.disc,.laser,.led,.progress span{{animation:none!important}}.done{{opacity:1}}}}
+    </style></head><body><div class="scene">
+      <div class="top"><span>CD WRITER · 52X</span><span>REC ●</span></div>
+      <div class="drive"><div class="disc"></div><div class="laser"></div><div class="slot"></div><div class="led"></div></div>
+      <div class="caption">{headline}</div><div class="sub">{subline}</div>
+      <div class="progress"><span></span></div><div class="done">✓ MIXTAPE READY TO SHARE</div>
+    </div></body></html>
+    """
+    components.html(animation, height=225, scrolling=False)
 
 
 def render_track_player(tracks, copy, key):
@@ -365,6 +523,8 @@ else:
             copy_values["pause_button_label"] = st.text_input("Pause button", max_chars=30, key="copy_pause_button_label", on_change=sync_copy_value, args=("pause_button_label",))
             copy_values["next_button_label"] = st.text_input("Next-track button", max_chars=30, key="copy_next_button_label", on_change=sync_copy_value, args=("next_button_label",))
             copy_values["playback_note"] = st.text_input("Playback note", max_chars=180, key="copy_playback_note", on_change=sync_copy_value, args=("playback_note",))
+            copy_values["burning_text"] = st.text_input("Burn animation headline", max_chars=100, key="copy_burning_text", on_change=sync_copy_value, args=("burning_text",))
+            copy_values["burn_complete_text"] = st.text_input("Burn animation subtitle", max_chars=180, key="copy_burn_complete_text", on_change=sync_copy_value, args=("burn_complete_text",))
             copy_values["footer_text"] = st.text_input("Footer text", max_chars=180, key="copy_footer_text", on_change=sync_copy_value, args=("footer_text",))
             st.session_state["copy_values"] = copy_values
 
@@ -407,6 +567,7 @@ else:
                 except Exception:
                     base_url = ""
                 share_url = f"{base_url}?mix={quote(current_payload)}" if base_url else ""
+                render_burn_animation(copy_values)
                 st.success("Your mixtape is ready to share.")
                 if share_url:
                     st.code(share_url, language=None)
