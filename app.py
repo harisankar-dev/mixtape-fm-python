@@ -557,16 +557,19 @@ else:
         with st.container(border=True):
             st.markdown(f'<div class="section-title">02 / {html.escape(str(copy_values["tracklist_heading"]))}</div>', unsafe_allow_html=True)
             st.caption("Paste YouTube links or 11-character video IDs. Up to 20 tracks.")
-            count = st.number_input("Number of tracks", min_value=1, max_value=20, value=3, step=1)
+            count = st.number_input("Select total number of tracks", min_value=0, max_value=20, value=0, step=1)
             tracks = []
             defaults = ["A song for the long way home", "The one that reminds me of you", "Track three"]
-            for i in range(int(count)):
-                with st.container(border=True):
-                    c1, c2 = st.columns([0.9, 1.1])
-                    default_title = defaults[i] if i < len(defaults) else f"Track {i+1}"
-                    track_title = c1.text_input(f"Track {i+1:02d} title", value=default_title, key=f"track_title_{i}", max_chars=120)
-                    track_url = c2.text_input("YouTube URL / ID", key=f"track_url_{i}", placeholder="youtube.com/watch?v=...")
-                    tracks.append({"title": track_title, "url": track_url})
+            if int(count) == 0:
+                st.caption("Choose how many tracks you want first. The title and YouTube fields will appear after you select a number.")
+            else:
+                for i in range(int(count)):
+                    with st.container(border=True):
+                        c1, c2 = st.columns([0.9, 1.1])
+                        default_title = defaults[i] if i < len(defaults) else f"Track {i+1}"
+                        track_title = c1.text_input(f"Track {i+1:02d} title", value=default_title, key=f"track_title_{i}", max_chars=120)
+                        track_url = c2.text_input("YouTube URL / ID", key=f"track_url_{i}", placeholder="youtube.com/watch?v=...")
+                        tracks.append({"title": track_title, "url": track_url})
 
     with right:
         with st.container(border=True):
